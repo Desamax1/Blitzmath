@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Despot Maksimovic, despotmaksimovic@gmail.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="style.css" />
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.min.js" integrity="sha512-fANg+hKlIqBdTzgYBT8eFIlZgKYTLij0S7Afvda/rw/Rm33I9+74HSdR1Urz2zGgCSZiQweMin46+l1obnoLWQ==" crossorigin="anonymous"></script>
+    <script defer type="text/javascript" src="script.js"></script>
+    <title>blitzmath</title>
+</head>
+<body>
+    <div class="title">
+        <h1>Blitzmath</h1>
+        <hr />
+        <h2>Takmicenje u brzoj matematici</h2>
+    </div>
+    
+    <form id="start-form">
+        <input type="number" name="sifra" id="sifra" placeholder="Unesi svoju sifru" />
+        <button id="start" type="submit">kreni</button>
+    </form>
+
+    <form id="buttons-wrapper" hidden>
+        <p id="question"></p>
+
+        <button type="submit" id="btn-1">1</button>
+        <button type="submit" id="btn-2">2</button>
+        <button type="submit" id="btn-3">3</button>
+        <button type="submit" id="btn-4">4</button>
+        <button type="submit" id="btn-dc">disconnect</button>
+
+        <p id="time"></p>
+        <p id="message"></p>
+    </form>
+
+    <footer>
+        <p>Blitzmath | Takmicenje u brzoj matematici</p>
+        <p>&copy; 2021 Despot Maksimovic</p>
+    </footer>
+    
+    <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</body>
+</html>
