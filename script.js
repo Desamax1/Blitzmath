@@ -26,7 +26,10 @@ const shuffle = array => {
 };
 
 const replaceButtons = answers => {
-    button1
+    button1.innerHTML = answers[0];
+    button2.innerHTML = answers[1];
+    button3.innerHTML = answers[2];
+    button4.innerHTML = answers[3];
 };
 
 start_form.addEventListener('submit', e => {
@@ -61,5 +64,6 @@ socket.on('res', (message, recv_obj) => {
     text.innerHTML = message;
     question.innerHTML = recv_obj.prompt;
     const answers = shuffle(recv_obj.answers);
+    console.log(answers);
     replaceButtons(answers);
 });
