@@ -8,6 +8,8 @@ const question = document.getElementById('question');
 const btns = document.getElementById('buttons-wrapper');
 const start_form = document.getElementById("start-form");
 
+const errorP = document.getElementById("error");
+
 const button1 = document.getElementById("btn-1");
 const button2 = document.getElementById("btn-2");
 const button3 = document.getElementById("btn-3");
@@ -43,9 +45,7 @@ start_form.addEventListener('submit', e => {
     e.preventDefault();
     if (start_form[0].value) {
         socket.connect();
-        start_form.toggleAttribute('hidden');
-        btns.toggleAttribute('hidden');
-        socket.emit('start', start_form[0].value);
+        socket.emit('start', parseInt(start_form[0].value));
         start_form[0].value = '';
         start_form[0].placeholder = 'Unesi svoju sifru';
     } else {
@@ -68,10 +68,22 @@ btns.addEventListener('submit', e => {
 socket.on('log', message => console.log(message));
 
 socket.on('res', (message, recv_obj) => {
-    text.innerHTML = message;
-    question.innerHTML = recv_obj.prompt;
-    const answers = shuffle(recv_obj.answers);
-    replaceButtons(answers);
+    if (message === "start") {
+        start_form.toggleAttribute('hidden');
+        btns.toggleAttribute('hidden');
+        text.innerHTML = message;
+        question.innerHTML = recv_obj.prompt;
+        const answers = shuffle(recv_obj.answers);
+        replaceButtons(answers);
+        errorP.innerHTML = "";
+    } else if (message === "error") {
+        errorP.innerHTML = recv_obj;
+    } else {
+        text.innerHTML = message;
+        question.innerHTML = recv_obj.prompt;
+        const answers = shuffle(recv_obj.answers);
+        replaceButtons(answers);
+    };
 });
 
 socket.on('penalty', () => {
