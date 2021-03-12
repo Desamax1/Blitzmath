@@ -32,6 +32,13 @@ const replaceButtons = answers => {
     button4.innerHTML = answers[3];
 };
 
+const toggleInputs = () => {
+    button1.toggleAttribute('disabled');
+    button2.toggleAttribute('disabled');
+    button3.toggleAttribute('disabled');
+    button4.toggleAttribute('disabled');
+};
+
 start_form.addEventListener('submit', e => {
     e.preventDefault();
     if (start_form[0].value) {
@@ -64,6 +71,10 @@ socket.on('res', (message, recv_obj) => {
     text.innerHTML = message;
     question.innerHTML = recv_obj.prompt;
     const answers = shuffle(recv_obj.answers);
-    console.log(answers);
     replaceButtons(answers);
+});
+
+socket.on('penalty', () => {
+    toggleInputs();
+    setTimeout(() => toggleInputs(), 3000);
 });
