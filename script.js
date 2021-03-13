@@ -9,6 +9,7 @@ const btns = document.getElementById('buttons-wrapper');
 const start_form = document.getElementById("start-form");
 
 const errorP = document.getElementById("error");
+const progBar = document.getElementById("progbar");
 
 const button1 = document.getElementById("btn-1");
 const button2 = document.getElementById("btn-2");
@@ -71,18 +72,17 @@ socket.on('res', (message, recv_obj) => {
     if (message === "start") {
         start_form.toggleAttribute('hidden');
         btns.toggleAttribute('hidden');
-        text.innerHTML = message;
         question.innerHTML = recv_obj.prompt;
-        const answers = shuffle(recv_obj.answers);
-        replaceButtons(answers);
+        replaceButtons(shuffle(recv_obj.answers));
         errorP.innerHTML = "";
     } else if (message === "error") {
         errorP.innerHTML = recv_obj;
     } else {
-        text.innerHTML = message;
+        progBar.classList.remove("progress");
+        void progBar.offsetWidth;
+        progBar.classList.add("progress");
         question.innerHTML = recv_obj.prompt;
-        const answers = shuffle(recv_obj.answers);
-        replaceButtons(answers);
+        replaceButtons(shuffle(recv_obj.answers));
     };
 });
 
