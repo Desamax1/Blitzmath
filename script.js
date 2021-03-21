@@ -1,4 +1,4 @@
-const socket = io('http://localhost:2000', {
+const socket = io('http://backend.blitzmath.ml:2000', {
     autoConnect: false
 });
 
@@ -24,7 +24,7 @@ const shuffle = array => {
         temporaryValue = array[currentIndex];
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
-    }
+    };
     return array;
 };
 
