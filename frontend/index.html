@@ -76,7 +76,8 @@
             signInOptions: [
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID
             ],
-            signInFlow: "popup"
+            signInFlow: "popup",
+            prompt: "select_account"
         };
         const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
