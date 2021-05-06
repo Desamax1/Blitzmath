@@ -57,7 +57,7 @@ socket.on('res', (recv_obj) => {
     progBar.classList.remove("progress");
     void progBar.offsetWidth;
     progBar.classList.add("progress");
-    question.innerText = recv_obj.prompt;
+    question.innerHTML = recv_obj.prompt;
     replaceButtons(shuffle(recv_obj.answers));
 });
 
