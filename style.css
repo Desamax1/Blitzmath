@@ -64,18 +64,8 @@ button {
     text-align: center;
 }
 
-#start-form {
-    border: 0.2rem white solid;
-    padding: 1vh;
-    border-radius: 0.8rem;
-    border-style: dashed;
-}
-
-#sifra {
-    width: 100%;
-    padding: 5px;
-    font: inherit;
-    text-align: center;
+#error {
+    margin-top: 5%;
 }
 
 .progress {
@@ -108,6 +98,8 @@ input[type=number] {
 /* END OF NUMBER INPUT FIX */
 
 footer {
+    position: fixed;
+    bottom: 0;
     padding: 1vw;
     display: flex;
     background-color: rgb(16, 18, 22);
@@ -116,7 +108,7 @@ footer {
     font-size: 0.8rem;
 }
 
-/* ANIMACIJA */
+/* POZADINA */
 
 .circles {
     max-width: 90vw;

@@ -6,9 +6,7 @@ const text = document.getElementById('message');
 const time = document.getElementById('time');
 const question = document.getElementById('question');
 const btns = document.getElementById('buttons-wrapper');
-const start_form = document.getElementById("start-form");
 
-const errorP = document.getElementById("error");
 const progBar = document.getElementById("progbar");
 
 const button1 = document.getElementById("btn-1");
@@ -42,18 +40,6 @@ const toggleInputs = () => {
     button4.toggleAttribute('disabled');
 };
 
-start_form.addEventListener('submit', e => {
-    e.preventDefault();
-    if (start_form[0].value) {
-        socket.connect();
-        socket.emit('start', parseInt(start_form[0].value));
-        start_form[0].value = '';
-        start_form[0].placeholder = 'Unesi svoju sifru';
-    } else {
-        start_form[0].placeholder = 'Moras upisati sifru!';
-    };
-});
-
 btns.addEventListener('submit', e => {
     e.preventDefault();
     if (e.submitter.id === "btn-dc") {
@@ -69,24 +55,38 @@ btns.addEventListener('submit', e => {
 socket.on('log', message => console.log(message));
 
 socket.on('res', (message, recv_obj) => {
-    if (message === "start") {
-        start_form.toggleAttribute('hidden');
-        btns.toggleAttribute('hidden');
-        question.innerHTML = recv_obj.prompt;
-        replaceButtons(shuffle(recv_obj.answers));
-        errorP.innerHTML = "";
-    } else if (message === "error") {
-        errorP.innerHTML = recv_obj;
-    } else {
-        progBar.classList.remove("progress");
-        void progBar.offsetWidth;
-        progBar.classList.add("progress");
-        question.innerHTML = recv_obj.prompt;
-        replaceButtons(shuffle(recv_obj.answers));
-    };
+    progBar.classList.remove("progress");
+    void progBar.offsetWidth;
+    progBar.classList.add("progress");
+    question.innerHTML = recv_obj.prompt;
+    replaceButtons(shuffle(recv_obj.answers));
 });
 
 socket.on('penalty', () => {
     toggleInputs();
     setTimeout(() => toggleInputs(), 3000);
+});
+
+window.addEventListener('load', () => {
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+                const {displayName, email, uid} = user;
+                if (email.indexOf('@teslabg.edu.rs') >= 0) {
+                    socket.connect();
+                    socket.emit("start", uid, displayName, email);
+                } else {
+                    let time = 5;
+                    document.getElementById("error").innerText = `Moras koristiti skolski mejl! Redirect za ${time} sekundi...`;
+                    firebase.auth().signOut().then(() => {
+                        setInterval(() => {
+                            time -= 1;
+                            document.getElementById("error").innerText = `Moras koristiti skolski mejl! Redirect za ${time} sekundi...`;
+                        }, 1000);
+                        setTimeout(() => {
+                            window.location.replace("/");
+                        }, 5000);
+                    }).catch(e => console.error(e));
+                }
+            }
+        }, e => console.error(e));
 });
