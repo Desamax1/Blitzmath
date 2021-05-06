@@ -45,7 +45,7 @@ btns.addEventListener('submit', e => {
     if (e.submitter.id === "btn-dc") {
         socket.disconnect();
         console.log("disconnected!");
-        btns.toggleAttribute('hidden');
+        firebase.auth().signOut().then(() => window.location.replace("/")).catch(e => console.error(e));
     } else {
         socket.emit('izbor', e.submitter.textContent);
     };
@@ -73,6 +73,7 @@ window.addEventListener('load', () => {
                 if (email.indexOf('@teslabg.edu.rs') >= 0) {
                     socket.connect();
                     socket.emit("start", uid, displayName, email);
+                    btns.toggleAttribute("hidden");
                 } else {
                     let time = 5;
                     document.getElementById("error").innerText = `Moras koristiti skolski mejl! Redirect za ${time} sekundi...`;

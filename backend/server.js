@@ -132,7 +132,7 @@ io.on('connection', socket => {
     socket.emit('log', `connected to the server with id ${socket.id}`);
     console.log(`session ${socket.id} started!`);
 
-    socket.on('start', (name, email, uid) => {
+    socket.on('start', (uid, name, email) => {
         checkDB(uid, email);
         ime = name;
 
