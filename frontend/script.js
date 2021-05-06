@@ -71,9 +71,9 @@ window.addEventListener('load', () => {
         if (user) {
                 const {displayName, email, uid} = user;
                 if (email.indexOf('@teslabg.edu.rs') >= 0) {
+                    btns.toggleAttribute("hidden");
                     socket.connect();
                     socket.emit("start", uid, displayName, email);
-                    btns.toggleAttribute("hidden");
                 } else {
                     let time = 5;
                     document.getElementById("error").innerText = `Moras koristiti skolski mejl! Redirect za ${time} sekundi...`;
