@@ -123,38 +123,35 @@ const genQuestion = () => {
     };
 };
 
+const checkDB = (uid, email) => {
+    return true;
+}
+
 io.on('connection', socket => {
-    let timeStarted = null, ans, enabled = true, score, ime;
+    let timeStarted = 0, ans, enabled = true, score, ime, timeTaken = 0;
     socket.emit('log', `connected to the server with id ${socket.id}`);
+    console.log(`session ${socket.id} started!`);
 
-    socket.on('start', (recv_sifra, ) => {
-        if (typeof recv_sifra === "number" && checkPass(recv_sifra)) {
-            sifra = recv_sifra;
-            Users.find({"sifra": sifra}, (err, doc) => {
-                ime = doc[0].ime;
-                prezime = doc[0].prezime;
-            });
-            timeStarted = Date.now();
-            console.log(`session ${socket.id} started!`);
+    socket.on('start', (name, email, uid) => {
+        checkDB(uid, email);
+        ime = name;
 
-            q = genQuestion();
-            socket.emit('res', "start", q);
-            ans = q.answers[0];
-        } else {
-            socket.emit("res", "error", "Greška pri prijavljivanju! Pokušajte ponovo.");
-            socket.disconnect();
-        };
+        timeStarted = Date.now();
+        q = genQuestion();
+        socket.emit('res', q);
+        ans = q.answers[0];
     });
 
     socket.on('izbor', i => {
         if (enabled) {
-            console.log(`User ${ime} ${prezime} answered ${i} (correct: ${ans})`);
+            console.log(`User ${ime} answered ${i} in ${timeTaken} (correct: ${ans})`);
             if (parseInt(i) === ans) {
                 // tacan odgovor
-                score += Date.now() - timeStarted;
+                let timeTaken =  Date.now() - timeStarted;
+                score += timeTaken;
                 q = genQuestion();
-                socket.emit('res', "", q);
                 ans = q.answers[0];
+                socket.emit('res', q);
                 timeStarted = Date.now();
             } else {
                 // netacan odgovor
