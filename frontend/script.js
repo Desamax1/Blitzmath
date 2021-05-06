@@ -45,7 +45,6 @@ btns.addEventListener('submit', e => {
     if (e.submitter.id === "btn-dc") {
         socket.disconnect();
         console.log("disconnected!");
-        start_form.toggleAttribute('hidden');
         btns.toggleAttribute('hidden');
     } else {
         socket.emit('izbor', e.submitter.textContent);
@@ -54,11 +53,11 @@ btns.addEventListener('submit', e => {
 
 socket.on('log', message => console.log(message));
 
-socket.on('res', (message, recv_obj) => {
+socket.on('res', (recv_obj) => {
     progBar.classList.remove("progress");
     void progBar.offsetWidth;
     progBar.classList.add("progress");
-    question.innerHTML = recv_obj.prompt;
+    question.innerText = recv_obj.prompt;
     replaceButtons(shuffle(recv_obj.answers));
 });
 
