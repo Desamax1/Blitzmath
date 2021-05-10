@@ -181,6 +181,11 @@ app.get("/leaderboard", (req, res) => {
     });
 });
 
-app.listen(443, () => console.log("REST API started"));
+// app.listen(443, () => console.log("REST API started"));
+require("http2").createSecureServer({
+    key: privateKey,
+    cert: cert_
+}, app).listen(443);
+console.log("REST API started")
 socketServer.listen(2053);
 console.log('Websocket started');
