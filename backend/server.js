@@ -9,7 +9,7 @@ const httpServer = require("http2").createSecureServer({
 const options = {
     serveClient: false,
     cors: {
-        origin: ["https://blitzmath.ml", "http://127.0.0.1:5500"],
+        origin: ["https://blitzmath.ml", "https://blitzmath.ml/takmicenje"],
         methods: ["GET"]
     }
 };
@@ -144,14 +144,14 @@ io.on('connection', socket => {
 
     socket.on('izbor', i => {
         if (enabled) {
-            console.log(`User ${ime} answered ${i} in ${timeTaken} (correct: ${ans})`);
+            console.log(`${ime} answered ${i}. Total: ${score} (correct: ${ans})`);
             if (parseInt(i) === ans) {
                 // tacan odgovor
-                let timeTaken =  Date.now() - timeStarted;
-                score += timeTaken;
+                score += Date.now() - timeStarted;
                 q = genQuestion();
                 ans = q.answers[0];
                 socket.emit('res', q);
+                console.log(`${ime}: ${q.prompt}`)
                 timeStarted = Date.now();
             } else {
                 // netacan odgovor
@@ -160,8 +160,8 @@ io.on('connection', socket => {
                 setTimeout(() => {
                     enabled = true;
                 }, 3000);
-            };
-        };
+            }
+        }
     });
 
     socket.on('disconnect', (reason) => console.log(socket.id, 'disconnected! reason: ', reason));
