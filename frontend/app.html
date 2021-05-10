@@ -11,20 +11,29 @@
     
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.min.js" integrity="sha512-fANg+hKlIqBdTzgYBT8eFIlZgKYTLij0S7Afvda/rw/Rm33I9+74HSdR1Urz2zGgCSZiQweMin46+l1obnoLWQ==" crossorigin="anonymous"></script>
     
-    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth__sr.js" type="text/javascript"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
-
     <title>Blitzmath | Takmicenje u brzoj matematici</title>
 </head>
 <body>
     <header class="title">
         <h1>Blitzmath</h1>
-        <hr />
-        <h2>Takmičenje u brzoj matematici</h2>
     </header>
 
-    <div id="firebase-auth"></div>
-
+    <main>
+        <div id="card">
+            <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.redd.it%2Fx800xtdu8mm31.jpg&f=1&nofb=1" alt="slika" height="100px" width="100px">
+            <div>
+                <p id="name">Despot Maksimovic</p>
+                <p id="highscore">Highscore: <span id="score">0</span></p>
+            </div>
+        </div>
+        <div>
+            <button>vezbaj</button>
+            <button>takmicenje</button>
+            <button>leaderboard</button>
+            <button id="logout">odjavi me</button>
+        </div>
+    </main>
+    
     <footer>
         <p>Blitzmath | Takmičenje u brzoj matematici</p>
         <p>&copy; 2021 Despot Maksimović</p>
@@ -47,18 +56,13 @@
 
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
-
-        const uiConfig = {
-            signInSuccessUrl: 'app.html',
-            signInOptions: [
-                firebase.auth.GoogleAuthProvider.PROVIDER_ID
-            ],
-            signInFlow: "popup",
-            prompt: "select_account"
-        };
-        const ui = new firebaseui.auth.AuthUI(firebase.auth());
-
-        ui.start('#firebase-auth', uiConfig);
+    </script>
+    <script type="text/javascript">
+        document.getElementById("logout").addEventListener('click', () => {
+            firebase.auth().signOut().then(() => {
+                window.location.replace("/");
+            }).catch(e => console.error(e));
+        });
     </script>
 </body>
 </html>

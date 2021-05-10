@@ -15,8 +15,8 @@ const options = {
 };
 
 const io = require('socket.io')(httpServer, options);
-
 const mongoose = require('mongoose');
+const findOrCreate = require('mongoose-find-or-create');
 
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb+srv://despot:bBVhAWWIlkidiUN2@cluster0.mqtnq.mongodb.net/db?retryWrites=true&w=majority', {
@@ -28,55 +28,53 @@ const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 
-const Users = mongoose.model('User', new mongoose.Schema({
-    ime: String,
-    prezime: String,
-    sifra: {
-        type: Number,
+const UserSchema = new mongoose.Schema({
+    uid: {
+        type: String,
         unique: true
     },
-    bodovi: Number
-}));
-
-var ready = false;
-var users = [];
-var sifre = [];
-
-const checkPass = sifra => {
-    for (let i = 0; i < sifre.length; i++) {
-        if (sifre[i] === sifra) return true;
-        else if (i === sifre.length - 1 && sifre[i] !== sifra) return false;
-    };
-};
-
-db.once('open', () => {
-    console.log("connected to db");
-    Users.find({}, (err, doc) => {
-        users = doc;
-        for (let i = 0; i < users.length; i++) {
-            sifre.push(users[i].sifra);
-        };
-        ready = true;
-    });
+    email: String,
+    ime_prezime: String,
+    firstLogin: {
+        type: Date,
+        default: Date.now
+    },
+    lastLogin: {
+        type: Date,
+        default: Date.now
+    },
+    admin: {
+        type: Boolean,
+        default: false
+    },
+    highscore: {
+        type: Number,
+        default: 0
+    }
 });
 
-const random = (mn, mx) => {
-    return Math.round(Math.random() * (mx - mn) + mn);
-};
+UserSchema.plugin(findOrCreate);
+
+const Users = mongoose.model('User', UserSchema);
+
+db.once('open', () => console.log("connected to db"));
+
+const random = (min, max) => {return Math.floor(Math.random() * (max - min + 1) + min)}
 
 const operacije = ['+', '-', '*', '/', '^'];
 
-const genOffset = (last) => {
+const genOffset = last => {
     if (last) {
         offset = 10;
     } else {
         offset = random(1, 9);
-    };
-    if (random(0, 1)) {
+    }
+
+    if (Math.round(Math.random())) {
         return offset * (-1);
     } else {
         return offset;
-    };
+    }
 }
 
 const genQuestion = () => {
@@ -124,11 +122,14 @@ const genQuestion = () => {
 };
 
 const checkDB = (uid, email) => {
+    Users.findOrCreate({uid: uid}, {email: email}, (err, res) => console.log(err, res));
     return true;
 }
 
 io.on('connection', socket => {
-    let timeStarted = 0, ans, enabled = true, score, ime, timeTaken = 0;
+    let ans, score, ime;
+    let enabled = true, timeStarted = 0;
+
     socket.emit('log', `connected to the server with id ${socket.id}`);
     console.log(`session ${socket.id} started!`);
 
@@ -142,10 +143,10 @@ io.on('connection', socket => {
         ans = q.answers[0];
     });
 
-    socket.on('izbor', i => {
+    socket.on('izbor', izbor => {
         if (enabled) {
-            console.log(`${ime} answered ${i}. Total: ${score} (correct: ${ans})`);
-            if (parseInt(i) === ans) {
+            console.log(`${ime} answered ${izbor}. Total: ${score} (correct: ${ans})`);
+            if (parseInt(izbor) === ans) {
                 // tacan odgovor
                 score += Date.now() - timeStarted;
                 q = genQuestion();
@@ -164,7 +165,7 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('disconnect', (reason) => console.log(socket.id, 'disconnected! reason: ', reason));
+    socket.on('disconnect', reason => console.log(socket.id, 'disconnected! reason: ', reason));
 });
 
 httpServer.listen(2053);
