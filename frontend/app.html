@@ -8,27 +8,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="style.css" />
-    
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.min.js" integrity="sha512-fANg+hKlIqBdTzgYBT8eFIlZgKYTLij0S7Afvda/rw/Rm33I9+74HSdR1Urz2zGgCSZiQweMin46+l1obnoLWQ==" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script defer src="app.js"></script>
     
     <title>Blitzmath | Takmicenje u brzoj matematici</title>
 </head>
 <body>
     <header class="title">
         <h1>Blitzmath</h1>
+        <div class="titleCard"></div>
     </header>
-
-    <main>
+    <p id="loading">Ucitavanje...</p>
+    <main class="hidden">
         <div id="card">
-            <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.redd.it%2Fx800xtdu8mm31.jpg&f=1&nofb=1" alt="slika" height="100px" width="100px">
+            <img src="" alt="slika" height="100px" width="100px" id="slika">
             <div>
                 <p id="name">Despot Maksimovic</p>
-                <p id="highscore">Highscore: <span id="score">0</span></p>
+                <p>Highscore: <span id="highscore">0</span></p>
             </div>
         </div>
         <div>
             <button>vezbaj</button>
-            <button>takmicenje</button>
+            <button id="takmicenje">takmicenje</button>
             <button>leaderboard</button>
             <button id="logout">odjavi me</button>
         </div>
@@ -42,27 +43,5 @@
     <script type="text/javascript" src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/firebasejs/8.5.0/firebase-analytics.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js"></script>
-    <script type="text/javascript">
-        const firebaseConfig = {
-            apiKey: "AIzaSyAi305auov5H3siXdByjx-fBKbom9X9EqM",
-            authDomain: "blitzmath-3ee6b.firebaseapp.com",
-            databaseURL: "https://blitzmath-3ee6b-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "blitzmath-3ee6b",
-            storageBucket: "blitzmath-3ee6b.appspot.com",
-            messagingSenderId: "762275634313",
-            appId: "1:762275634313:web:12e5fd745f38f5b808ba58",
-            measurementId: "G-Q5JPQ5KHWE"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-    </script>
-    <script type="text/javascript">
-        document.getElementById("logout").addEventListener('click', () => {
-            firebase.auth().signOut().then(() => {
-                window.location.replace("/");
-            }).catch(e => console.error(e));
-        });
-    </script>
 </body>
 </html>

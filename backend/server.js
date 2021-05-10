@@ -1,10 +1,17 @@
 require('dotenv').config();
 const fs = require("fs");
-const httpServer = require("http2").createSecureServer({
+
+const privateKey = fs.readFileSync("keys/key.pem");
+const cert_ = fs.readFileSync("keys/cert.pem");
+
+const socketServer = require("http2").createSecureServer({
     allowHTTP1: true,
-    key: fs.readFileSync("keys/key.pem"),
-    cert: fs.readFileSync("keys/cert.pem")
+    key: privateKey,
+    cert: cert_
 });
+
+const express = require('express');
+const app = express();
 
 const options = {
     serveClient: false,
@@ -14,7 +21,7 @@ const options = {
     }
 };
 
-const io = require('socket.io')(httpServer, options);
+const io = require('socket.io')(socketServer, options);
 const mongoose = require('mongoose');
 const findOrCreate = require('mongoose-find-or-create');
 
@@ -168,5 +175,12 @@ io.on('connection', socket => {
     socket.on('disconnect', reason => console.log(socket.id, 'disconnected! reason: ', reason));
 });
 
-httpServer.listen(2053);
-console.log('started');
+app.get("/leaderboard", (req, res) => {
+    res.JSON({
+        "some": "data"
+    });
+});
+
+app.listen(443, () => console.log("REST API started"));
+socketServer.listen(2053);
+console.log('Websocket started');
