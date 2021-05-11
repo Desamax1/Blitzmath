@@ -1,4 +1,4 @@
-const socket = io('https://backend.blitzmath.ml:2053', {
+const socket = io('https://dev.backend.blitzmath.ml:2053', {
     autoConnect: false
 });
 

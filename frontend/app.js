@@ -22,10 +22,11 @@ document.getElementById("takmicenje").addEventListener('click', () => {
     window.location.replace(`/takmicenje.html`);
 });
 
-const updateUi = async (displayName, uid, photoURL) => {
+const updateUi = (displayName, uid, photoURL) => {
     document.getElementById("slika").src = photoURL;
     document.getElementById("name").innerText = displayName;
     // document.getElementById("highscore").innerText = await axios.get(`https://backend.blitzmath.ml/leaderboard?uid=${uid}`);
+    axios.get(`https://dev.backend.blitzmath.ml/leaderboard?uid=${uid}`).then(res => console.log(res.data));
 }
 
 firebase.auth().onAuthStateChanged(user => {

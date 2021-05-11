@@ -1,29 +1,31 @@
 require('dotenv').config();
 const fs = require("fs");
-
-const privateKey = fs.readFileSync("keys/key.pem");
-const cert_ = fs.readFileSync("keys/cert.pem");
-
 const socketServer = require("http2").createSecureServer({
     allowHTTP1: true,
-    key: privateKey,
-    cert: cert_
+    key: fs.readFileSync("keys/key.pem"),
+    cert: fs.readFileSync("keys/cert.pem")
 });
 
 const express = require('express');
+const spdy = require('spdy');
+const cors = require('cors');
 const app = express();
+
+app.use(cors({
+    origin: ["https://blitzmath.ml", "http://localhost:5500"]
+}));
 
 const options = {
     serveClient: false,
     cors: {
-        origin: ["https://blitzmath.ml", "https://blitzmath.ml/takmicenje"],
+        origin: ["https://blitzmath.ml", "http://localhost:5500"],
         methods: ["GET"]
     }
 };
 
 const io = require('socket.io')(socketServer, options);
 const mongoose = require('mongoose');
-const findOrCreate = require('mongoose-find-or-create');
+const findOrCreate = require('mongoose-findorcreate');
 
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb+srv://despot:bBVhAWWIlkidiUN2@cluster0.mqtnq.mongodb.net/db?retryWrites=true&w=majority', {
@@ -35,13 +37,24 @@ const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 
+new TextDecoder()
+
 const UserSchema = new mongoose.Schema({
     uid: {
         type: String,
+        unique: true,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
         unique: true
     },
-    email: String,
-    ime_prezime: String,
+    ime_prezime: {
+        type: String,
+        required: true,
+        unique: true
+    },
     firstLogin: {
         type: Date,
         default: Date.now
@@ -128,8 +141,9 @@ const genQuestion = () => {
     };
 };
 
-const checkDB = (uid, email) => {
-    Users.findOrCreate({uid: uid}, {email: email}, (err, res) => console.log(err, res));
+const checkDB = (uid, email, displayName) => {
+    Users.findOrCreate({uid: uid}, {email: email}, {ime_prezime: displayName}, (err, res) => console.log(res));
+    // Users.findOne({uid: uid}, (err, res) => console.log(res, err));
     return true;
 }
 
@@ -141,7 +155,15 @@ io.on('connection', socket => {
     console.log(`session ${socket.id} started!`);
 
     socket.on('start', (uid, name, email) => {
-        checkDB(uid, email);
+        const table = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu","ћ":"c", "ч":"c"}
+
+        function transliterate(word) {
+            return word.split('').map(function (char) { 
+                return table[char] || char;
+            }).join("");
+        }
+        console.log(transliterate(name));
+        checkDB(uid, email, transliterate(name));
         ime = name;
 
         timeStarted = Date.now();
@@ -176,16 +198,27 @@ io.on('connection', socket => {
 });
 
 app.get("/leaderboard", (req, res) => {
-    res.JSON({
-        "some": "data"
-    });
+    if (req.query.uid) {
+        res.status(200).json({
+            uid: req.query.uid,
+            message: "logged in"
+        });
+    } else {
+        res.status(200).json({
+            message: "not logged in"
+        });
+    }
 });
 
-// app.listen(443, () => console.log("REST API started"));
-require("http2").createSecureServer({
-    key: privateKey,
-    cert: cert_
-}, app).listen(443);
-console.log("REST API started")
-socketServer.listen(2053);
-console.log('Websocket started');
+spdy.createServer({
+    allowHTTP1: true,
+    key: fs.readFileSync("keys/key.pem"),
+    cert: fs.readFileSync("keys/cert.pem")
+}, app).listen(443, err => {
+    if (err) {
+        console.error(err);
+    } else {
+        console.log("REST API started")
+    }
+})
+socketServer.listen(2053, () => console.log('Websocket started'));

@@ -17,7 +17,8 @@
     "http2": "^3.3.7",
     "mongoose": "^5.12.7",
     "mongoose-findorcreate": "^3.0.0",
-    "socket.io": "^4.0.2"
+    "socket.io": "^4.0.2",
+    "spdy": "^4.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
