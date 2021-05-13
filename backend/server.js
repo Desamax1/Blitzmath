@@ -5,6 +5,13 @@ const socketServer = require("http2").createSecureServer({
     key: fs.readFileSync("keys/key.pem"),
     cert: fs.readFileSync("keys/cert.pem")
 });
+const io = require('socket.io')(socketServer, {
+    serveClient: false,
+    cors: {
+        origin: ["https://blitzmath.ml", "http://localhost:5500"],
+        methods: ["GET"]
+    }
+});
 
 const express = require('express');
 const spdy = require('spdy');
@@ -15,29 +22,17 @@ app.use(cors({
     origin: ["https://blitzmath.ml", "http://localhost:5500"]
 }));
 
-const options = {
-    serveClient: false,
-    cors: {
-        origin: ["https://blitzmath.ml", "http://localhost:5500"],
-        methods: ["GET"]
-    }
-};
-
-const io = require('socket.io')(socketServer, options);
 const mongoose = require('mongoose');
 const findOrCreate = require('mongoose-findorcreate');
 
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb+srv://despot:bBVhAWWIlkidiUN2@cluster0.mqtnq.mongodb.net/db?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://despot:vKz2Mxhknhvl8YIH@blitzcluster.dynoy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
 const db = mongoose.connection;
-
 db.on('error', console.error.bind(console, 'connection error:'));
-
-new TextDecoder()
 
 const UserSchema = new mongoose.Schema({
     uid: {
@@ -74,13 +69,10 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.plugin(findOrCreate);
-
 const Users = mongoose.model('User', UserSchema);
-
 db.once('open', () => console.log("connected to db"));
 
-const random = (min, max) => {return Math.floor(Math.random() * (max - min + 1) + min)}
-
+const random = (min, max) => { return Math.floor(Math.random() * (max - min + 1) + min) }
 const operacije = ['+', '-', '*', '/', '^'];
 
 const genOffset = last => {
@@ -110,12 +102,12 @@ const genQuestion = () => {
                 result = br1 + br2;
             } else {
                 result = br1 - br2;
-            };
+            }
             izraz = `${br1} ${op} ${br2}`;
             return {
                 prompt: izraz,
                 answers: [result, result + genOffset(false), result + genOffset(false), result + genOffset(true)]
-            };
+            }
         case "*":
         case "/":
             br1 = random(1, 25);
@@ -123,12 +115,12 @@ const genQuestion = () => {
             result = br1 * br2;
             if (op === "/") {
                 [result, br1] = [br1, result];
-            };
+            }
             izraz = `${br1} ${op} ${br2}`;
             return {
                 prompt: izraz,
                 answers: [result, result + genOffset(false), result + genOffset(false), result + genOffset(true)]
-            };
+            }
         case "^":
             br1 = random(2, 6);
             br2 = random(2, 4);
@@ -137,34 +129,31 @@ const genQuestion = () => {
             return {
                 prompt: izraz,
                 answers: [result, result * br2, result * br1, result / br1]
-            };
-    };
-};
+            }
+    }
+}
 
 const checkDB = (uid, email, displayName) => {
-    Users.findOrCreate({uid: uid}, {email: email}, {ime_prezime: displayName}, (err, res) => console.log(res));
-    // Users.findOne({uid: uid}, (err, res) => console.log(res, err));
-    return true;
+    Users.findOrCreate({uid: uid, email: email, ime_prezime: displayName}, (err, user, created) => {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log(`User ${displayName} located in DB!`);
+        }
+    });
 }
 
 io.on('connection', socket => {
-    let ans, score, ime;
-    let enabled = true, timeStarted = 0;
+    let ans, score, ime, id;
+    let enabled = true;
 
     socket.emit('log', `connected to the server with id ${socket.id}`);
     console.log(`session ${socket.id} started!`);
 
     socket.on('start', (uid, name, email) => {
-        const table = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu","ћ":"c", "ч":"c"}
-
-        function transliterate(word) {
-            return word.split('').map(function (char) { 
-                return table[char] || char;
-            }).join("");
-        }
-        console.log(transliterate(name));
-        checkDB(uid, email, transliterate(name));
+        checkDB(uid, email, name);
         ime = name;
+        id = uid;
 
         timeStarted = Date.now();
         q = genQuestion();
@@ -177,24 +166,27 @@ io.on('connection', socket => {
             console.log(`${ime} answered ${izbor}. Total: ${score} (correct: ${ans})`);
             if (parseInt(izbor) === ans) {
                 // tacan odgovor
-                score += Date.now() - timeStarted;
+                score += 1;
                 q = genQuestion();
                 ans = q.answers[0];
                 socket.emit('res', q);
-                console.log(`${ime}: ${q.prompt}`)
-                timeStarted = Date.now();
+                console.log(`${ime}: ${q.prompt}`);
             } else {
                 // netacan odgovor
                 socket.emit('penalty');
-                enabled = false;
-                setTimeout(() => {
-                    enabled = true;
-                }, 3000);
+                Users.updateOne({uid: id, highscore: { $gt: score }}, { $set: { highscore: score } });
             }
         }
     });
 
     socket.on('disconnect', reason => console.log(socket.id, 'disconnected! reason: ', reason));
+});
+
+app.get("/loggedIn", (req, res) => {
+    res.status(200).json({
+        message: "OK"
+    });
+    Users.updateOne({uid: req.query.uid}, {lastLogin: Date.now()}).then((doc) => console.log(`UID ${req.query.uid} logged in!`));
 });
 
 app.get("/leaderboard", (req, res) => {
@@ -204,9 +196,20 @@ app.get("/leaderboard", (req, res) => {
             message: "logged in"
         });
     } else {
-        res.status(200).json({
-            message: "not logged in"
-        });
+        res.status(200).json(
+            [{
+                ime_prezime: "Petar Jankovic",
+                score: 20
+            },
+            {
+                ime_prezime: "Marko Markovic",
+                score: 10
+            },
+            {
+                ime_prezime: "Jovan Ducic",
+                score: 5
+            }]
+        );
     }
 });
 
@@ -220,5 +223,5 @@ spdy.createServer({
     } else {
         console.log("REST API started")
     }
-})
+});
 socketServer.listen(2053, () => console.log('Websocket started'));

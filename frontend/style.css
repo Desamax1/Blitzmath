@@ -119,17 +119,35 @@ main {
 .progress {
     width: 0;
     height: 1rem;
-    background-color: #2773a0;
     animation: progBar 10s;
 }
 
 @keyframes progBar {
     from {
         width: 100%;
+        background-color: #2773a0;
+    }
+    20% {
+        background-color: #2773a0;
+    }
+    30% {
+        background-color: rgb(218, 185, 40);
     }
     to {
         width: 0%;
+        background-color: rgb(187, 11, 11);
     }
+}
+
+table {
+    border: 0.12rem solid white;
+    border-collapse: collapse;
+    caption-side: bottom;
+}
+
+table td {
+    border: 2px white solid;
+    padding: 0.2rem;
 }
 
 /* NUMBER INPUT FIX */

@@ -19,19 +19,24 @@ document.getElementById("logout").addEventListener('click', () => {
 });
 
 document.getElementById("takmicenje").addEventListener('click', () => {
-    window.location.replace(`/takmicenje.html`);
+    window.location.replace("takmicenje.html");
+});
+
+document.getElementById("leaderboard").addEventListener('click', () => {
+    window.location.replace("leaderboard.html");
 });
 
 const updateUi = (displayName, uid, photoURL) => {
     document.getElementById("slika").src = photoURL;
     document.getElementById("name").innerText = displayName;
     // document.getElementById("highscore").innerText = await axios.get(`https://backend.blitzmath.ml/leaderboard?uid=${uid}`);
-    axios.get(`https://dev.backend.blitzmath.ml/leaderboard?uid=${uid}`).then(res => console.log(res.data));
+    fetch(`https://dev.backend.blitzmath.ml/leaderboard?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
 }
 
 firebase.auth().onAuthStateChanged(user => {
     if (user) {
             const {displayName, uid, photoURL} = user;
+            fetch(`https://dev.backend.blitzmath.ml/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
             updateUi(displayName, uid, photoURL);
             document.getElementById("loading").toggleAttribute("hidden");
             document.querySelector("main").classList = "";

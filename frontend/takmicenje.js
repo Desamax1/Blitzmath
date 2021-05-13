@@ -45,7 +45,7 @@ btns.addEventListener('submit', e => {
     if (e.submitter.id === "btn-dc") {
         socket.disconnect();
         console.log("disconnected!");
-        firebase.auth().signOut().then(() => window.location.replace("/")).catch(e => console.error(e));
+        window.location.replace("app.html").catch(e => console.error(e));
     } else {
         socket.emit('izbor', e.submitter.textContent);
     };
@@ -83,10 +83,10 @@ window.addEventListener('load', () => {
                             document.getElementById("error").innerText = `Moras koristiti skolski mejl! Redirect za ${time} sekundi...`;
                         }, 1000);
                         setTimeout(() => {
-                            window.location.replace("/");
+                            window.location.replace("index.html");
                         }, 5000);
-                    }).catch(e => console.error(e));
+                    }).catch(e => console.error);
                 }
             }
-        }, e => console.error(e));
+        }, e => console.error);
 });

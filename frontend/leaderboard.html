@@ -9,8 +9,8 @@
     <link type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="style.css" />
     
-    <script defer src="app.js"></script>
-    
+    <script defer src="leaderboard.js"></script>
+
     <title>Blitzmath | Takmicenje u brzoj matematici</title>
 </head>
 <body>
@@ -18,21 +18,22 @@
         <h1>Blitzmath</h1>
         <div class="titleCard"></div>
     </header>
-    <p id="loading">Ucitavanje...</p>
-    <main class="hidden">
-        <div id="card">
-            <img src="" alt="slika" height="100px" width="100px" id="slika">
-            <div>
-                <p id="name">Despot Maksimovic</p>
-                <p>Highscore: <span id="highscore">0</span></p>
-            </div>
-        </div>
-        <div>
-            <button>vezbaj</button>
-            <button id="takmicenje">takmicenje</button>
-            <button id="leaderboard">leaderboard</button>
-            <button id="logout">odjavi me</button>
-        </div>
+    
+    <main>
+        <table>
+            <caption>
+                <button onclick="window.location.replace('app.html')">Vrati se nazad</button>
+            </caption>
+            <thead>
+                <tr>
+                    <th>Ime i prezime</th>
+                    <th>Broj poena</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
     </main>
     
     <footer>
