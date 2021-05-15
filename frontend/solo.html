@@ -14,10 +14,23 @@
     <title>Blitzmath | Takmicenje u brzoj matematici</title>
 </head>
 <body>
-    <main>
-        <p id="error"></p>
+    <header class="title">
+        <h1>Blitzmath</h1>
+        <div class="titleCard"></div>
+    </header>
 
-        <form id="buttons-wrapper">
+    <main>
+        <div class="solo" id="solo-msg">
+            <h2>Solo mod</h2>
+            <p>U solo modu takmicenja potrebno je da odgovaras tacno na pitanja dokle god je to moguce!</p>
+            <br>
+            <p>Nakon svake runde imaces po 5% manje vremena. Nakon sto izgubis videces broj poena koji si osvojio i svoj highscore, a imaces i opciju da pokusas ponovo ako nisi zadovoljan svojim rezultatom.</p>
+            <br>
+            <button id="solo-ready">spreman sam</button>
+            <button onclick="window.location.replace('app.html')">vrati se nazad</button>
+        </div>
+
+        <form id="buttons-wrapper" hidden>
             <p id="question"></p>
 
             <button type="submit" id="btn-1"></button>

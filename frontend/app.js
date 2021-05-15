@@ -18,8 +18,8 @@ document.getElementById("logout").addEventListener('click', () => {
     }).catch(e => console.error(e));
 });
 
-document.getElementById("takmicenje").addEventListener('click', () => {
-    window.location.replace("takmicenje.html");
+document.getElementById("solo-mod").addEventListener('click', () => {
+    window.location.replace("solo.html");
 });
 
 document.getElementById("leaderboard").addEventListener('click', () => {

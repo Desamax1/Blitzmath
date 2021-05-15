@@ -150,18 +150,11 @@ table td {
     padding: 0.2rem;
 }
 
-/* NUMBER INPUT FIX */
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.solo {
+    border: white 0.115rem solid;
+    padding: 0.2rem;
+    border-radius: 0.5rem;
 }
-input[type=number] {
-  -moz-appearance: textfield;
-}
-
-/* END OF NUMBER INPUT FIX */
 
 footer {
     position: fixed;
@@ -172,4 +165,15 @@ footer {
     width: 100vw;
     justify-content: space-between;
     font-size: 0.8rem;
+}
+
+/* NUMBER INPUT FIX */
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
 }
