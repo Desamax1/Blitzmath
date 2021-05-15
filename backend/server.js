@@ -144,8 +144,9 @@ const checkDB = (uid, email, displayName) => {
 }
 
 io.on('connection', socket => {
-    let ans = -500, ime, id;
-    let enabled = true;
+    let ime, id;
+    let enabled = true, score = -1, ans = -500;
+    
 
     socket.emit('log', `connected to the server with id ${socket.id}`);
     console.log(`session ${socket.id} started!`);
@@ -154,17 +155,11 @@ io.on('connection', socket => {
         ime = name;
         id = uid;
     });
-    // socket.on('start', (uid, name, email) => {
-    //     q = genQuestion();
-    //     socket.emit('res', q);
-    //     ans = q.answers[0];
-    // });
 
     socket.on('izbor', izbor => {
         if (enabled) {
-            let score = 5;
             console.log(`${ime} answered ${izbor}. Total: ${score} (correct: ${ans})`);
-            if (parseInt(izbor) === ans) {
+            if (parseInt(izbor) === ans || ans === -500) {
                 // tacan odgovor
                 score++;
                 q = genQuestion();
@@ -173,8 +168,11 @@ io.on('connection', socket => {
                 console.log(`${ime}: ${q.prompt}`);
             } else {
                 // netacan odgovor
-                socket.emit('penalty');
-                console.log(Users.updateOne( { "uid": id, highscore: { $lt: score } }, { $set: { highscore: score } } ));
+                socket.emit("fail");
+                Users.updateOne( { "uid": id, highscore: { $lt: score } }, { $set: { highscore: score } } )
+                    .then(obj => {
+                        console.log(`highscore in DB set to ${score}`);
+                    });
             }
         }
     });

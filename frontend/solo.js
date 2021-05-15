@@ -9,11 +9,6 @@ const btns = document.getElementById('buttons-wrapper');
 
 const progBar = document.getElementById("progbar");
 
-const button1 = document.getElementById("btn-1");
-const button2 = document.getElementById("btn-2");
-const button3 = document.getElementById("btn-3");
-const button4 = document.getElementById("btn-4");
-
 const shuffle = array => {
     let currentIndex = array.length, temporaryValue, randomIndex;
     while (0 !== currentIndex) {
@@ -27,17 +22,10 @@ const shuffle = array => {
 };
 
 const replaceButtons = answers => {
-    button1.innerHTML = answers[0];
-    button2.innerHTML = answers[1];
-    button3.innerHTML = answers[2];
-    button4.innerHTML = answers[3];
-};
-
-const toggleInputs = () => {
-    button1.toggleAttribute('disabled');
-    button2.toggleAttribute('disabled');
-    button3.toggleAttribute('disabled');
-    button4.toggleAttribute('disabled');
+    document.getElementById("btn-1").innerHTML = answers[0];
+    document.getElementById("btn-2").innerHTML = answers[1];
+    document.getElementById("btn-3").innerHTML = answers[2];
+    document.getElementById("btn-4").innerHTML = answers[3];
 };
 
 btns.addEventListener('submit', e => {
@@ -68,9 +56,8 @@ socket.on('res', (recv_obj) => {
     replaceButtons(shuffle(recv_obj.answers));
 });
 
-socket.on('penalty', () => {
-    toggleInputs();
-    setTimeout(() => toggleInputs(), 3000);
+socket.on('fail', () => {
+    
 });
 
 window.addEventListener('load', () => {
