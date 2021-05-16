@@ -7,7 +7,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="style.css" />
-
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
     <script type="text/javascript" src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
     <script defer type="text/javascript" src="solo.js"></script>
 
@@ -32,7 +38,7 @@
 
         <div class="solo" id="solo-fail" hidden>
             <h2>Pogresan odgovor!</h2>
-            <p>Pogresno si odgovorio na to pitanje i izgubio! Tvoj score bio je <span id="solo-score"></span>.</p>
+            <p>Pogresno si odgovorio na to pitanje ili si ostao bez vremena! Tvoj score bio je <span id="solo-score"></span>.</p>
             <button onclick="start(false)">igraj ponovo</button>
             <button onclick="window.location.replace('app.html')">vrati se nazad</button>
         </div>

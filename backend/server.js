@@ -158,17 +158,21 @@ io.on("connection", socket => {
 
     socket.on('izbor', izbor => {
         console.log(`${ime} answered ${izbor}. Total: ${score} (correct: ${ans})`);
+        let timeout = null;
         if (parseInt(izbor) === ans || ans === -500) {
             // tacan odgovor
+            if (timeout) {
+                clearTimeout(timeout);
+            }
             score++;
-            q = genQuestion();
-            ans = q.answers[0];
-            let time = 10000 * (0.95 ** score);
-            socket.emit("res", q, time);
-            setTimeout(() => {
+            time = 10000 * (0.95 ** score);
+            timeout = setTimeout(() => {
                 socket.emit("fail", score);
                 socket.disconnect();
             }, time);
+            q = genQuestion();
+            ans = q.answers[0];            
+            socket.emit("res", q, time);
             console.log(`${ime}: ${q.prompt}`);
         } else {
             // netacan odgovor

@@ -9,6 +9,7 @@
     font-family: 'Roboto Mono', monospace;
     color: white;
     overflow: hidden;
+    --animation-time: 10s;
 }
 
 body {
@@ -119,7 +120,7 @@ main {
 .progress {
     width: 0;
     height: 1rem;
-    animation: progBar 10s;
+    animation: progBar var(--animation-time);
 }
 
 @keyframes progBar {

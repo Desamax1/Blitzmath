@@ -58,6 +58,8 @@ socket.on('res', (recv_obj, time) => {
     progBar.classList.remove("progress");
     void progBar.offsetWidth;
     progBar.classList.add("progress");
+    document.querySelector("body").style.setProperty("--animation-time", time + "ms");
+    console.log(getComputedStyle(document.body).getPropertyValue('--animation-time'))
     question.innerHTML = recv_obj.prompt;
     replaceButtons(shuffle(recv_obj.answers));
 });
