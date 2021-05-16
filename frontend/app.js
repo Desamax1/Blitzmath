@@ -30,7 +30,7 @@ const updateUi = (displayName, uid, photoURL) => {
     document.getElementById("slika").src = photoURL;
     document.getElementById("name").innerText = displayName;
     // document.getElementById("highscore").innerText = await axios.get(`https://backend.blitzmath.ml/leaderboard?uid=${uid}`);
-    fetch(`https://backend.blitzmath.ml:4433/leaderboard?uid=${uid}`).then(res => res.json().then(json => { document.getElementById("highscore").innerText = json.score }));
+    fetch(`https://backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => { document.getElementById("highscore").innerText = json.score }));
 }
 
 firebase.auth().onAuthStateChanged(user => {

@@ -1,5 +1,5 @@
 const fillTable = async () => {
-    const json = await (await fetch("https://backend.blitzmath.ml:4433/leaderboard")).json();
+    const json = await (await fetch("https://backend.blitzmath.ml:8443/leaderboard")).json();
     json.forEach(usr => {
         console.log(usr);
         const element = document.createElement("tr");
