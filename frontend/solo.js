@@ -40,6 +40,7 @@ const start = first => {
     } else {
         document.getElementById("solo-fail").toggleAttribute("hidden")
         socket.connect();
+        socket.emit("conn", uid, displayName, email);
     }
     btns.toggleAttribute("hidden");
     socket.emit("izbor", -500);
