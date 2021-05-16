@@ -33,22 +33,20 @@ btns.addEventListener('submit', e => {
     if (e.submitter.id === "btn-dc") {
         socket.disconnect();
         console.log("disconnected!");
-        window.location.replace("app.html").catch(e => console.error(e));
+        window.location.replace("app.html");
     } else {
         socket.emit('izbor', e.submitter.textContent);
     };
 });
 
 const start = first => {
-    console.log(!first)
+    // console.log(!first)
     if (first) {
         document.getElementById("solo-msg").toggleAttribute("hidden")
     } else {
         document.getElementById("solo-fail").toggleAttribute("hidden")
     }
-    // if (!first) {  }
     btns.toggleAttribute("hidden");
-
     socket.emit("izbor", -500);
 }
 
