@@ -30,13 +30,7 @@ const replaceButtons = answers => {
 
 btns.addEventListener('submit', e => {
     e.preventDefault();
-    if (e.submitter.id === "btn-dc") {
-        socket.disconnect();
-        console.log("disconnected!");
-        window.location.replace("app.html");
-    } else {
-        socket.emit('izbor', e.submitter.textContent);
-    };
+    socket.emit('izbor', e.submitter.textContent);
 });
 
 const start = first => {
@@ -45,6 +39,7 @@ const start = first => {
         document.getElementById("solo-msg").toggleAttribute("hidden")
     } else {
         document.getElementById("solo-fail").toggleAttribute("hidden")
+        socket.connect();
     }
     btns.toggleAttribute("hidden");
     socket.emit("izbor", -500);
