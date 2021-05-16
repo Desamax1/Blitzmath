@@ -82,7 +82,7 @@ window.addEventListener('load', () => {
                         setTimeout(() => {
                             window.location.replace("index.html");
                         }, 5000);
-                    }).catch(e => console.error);
+                    }).catch(e => console.error(e));
                 }
             }
         }, e => console.error);
