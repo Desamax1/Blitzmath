@@ -26,7 +26,14 @@
             <br>
             <p>Nakon svake runde imaces po 5% manje vremena. Nakon sto izgubis videces broj poena koji si osvojio i svoj highscore, a imaces i opciju da pokusas ponovo ako nisi zadovoljan svojim rezultatom.</p>
             <br>
-            <button id="solo-ready">spreman sam</button>
+            <button onclick="start(true)">spreman sam</button>
+            <button onclick="window.location.replace('app.html')">vrati se nazad</button>
+        </div>
+
+        <div class="solo" id="solo-fail" hidden>
+            <h2>Pogresan odgovor!</h2>
+            <p>Pogresno si odgovorio na to pitanje i izgubio! Tvoj score bio je <span id="solo-score"></span>.</p>
+            <button onclick="start(false)">igraj ponovo</button>
             <button onclick="window.location.replace('app.html')">vrati se nazad</button>
         </div>
 

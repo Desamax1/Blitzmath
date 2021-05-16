@@ -143,9 +143,9 @@ const checkDB = (uid, email, displayName) => {
     });
 }
 
-io.on('connection', socket => {
+io.on("connection", socket => {
     let ime, id;
-    let enabled = true, score = -1, ans = -500;
+    let score = -1, ans = -500;
     
 
     socket.emit('log', `connected to the server with id ${socket.id}`);
@@ -157,23 +157,27 @@ io.on('connection', socket => {
     });
 
     socket.on('izbor', izbor => {
-        if (enabled) {
-            console.log(`${ime} answered ${izbor}. Total: ${score} (correct: ${ans})`);
-            if (parseInt(izbor) === ans || ans === -500) {
-                // tacan odgovor
-                score++;
-                q = genQuestion();
-                ans = q.answers[0];
-                socket.emit('res', q);
-                console.log(`${ime}: ${q.prompt}`);
-            } else {
-                // netacan odgovor
-                socket.emit("fail");
-                Users.updateOne( { "uid": id, highscore: { $lt: score } }, { $set: { highscore: score } } )
-                    .then(obj => {
-                        console.log(`highscore in DB set to ${score}`);
-                    });
-            }
+        console.log(`${ime} answered ${izbor}. Total: ${score} (correct: ${ans})`);
+        if (parseInt(izbor) === ans || ans === -500) {
+            // tacan odgovor
+            score++;
+            q = genQuestion();
+            ans = q.answers[0];
+            let time = 10000 * (0.95 ** score);
+            socket.emit("res", q, time);
+            setTimeout(() => {
+                socket.emit("fail", score);
+                socket.disconnect();
+            }, time);
+            console.log(`${ime}: ${q.prompt}`);
+        } else {
+            // netacan odgovor
+            socket.emit("fail", score);
+            socket.disconnect();
+            Users.updateOne( { "uid": id, highscore: { $lt: score } }, { $set: { highscore: score } } )
+                .then(obj => {
+                    console.log(`User ${ime} failed with a score of ${score}!`);
+                });
         }
     });
 
@@ -181,33 +185,21 @@ io.on('connection', socket => {
 });
 
 app.get("/loggedIn", (req, res) => {
+    Users.updateOne({uid: req.query.uid}, {lastLogin: Date.now()}).then(doc => console.log(`UID ${req.query.uid} logged in!`));
     res.status(200).json({
-        message: "OK"
+        message: "login recorded"
     });
-    Users.updateOne({uid: req.query.uid}, {lastLogin: Date.now()}).then((doc) => console.log(`UID ${req.query.uid} logged in!`));
 });
 
 app.get("/leaderboard", (req, res) => {
     if (req.query.uid) {
-        res.status(200).json({
-            uid: req.query.uid,
-            message: "logged in"
+        Users.findOne({uid: req.query.uid}).then(doc => {
+            res.status(200).json({
+                score: doc.highscore
+            });
         });
     } else {
-        res.status(200).json(
-            [{
-                ime_prezime: "Petar Jankovic",
-                score: 20
-            },
-            {
-                ime_prezime: "Marko Markovic",
-                score: 10
-            },
-            {
-                ime_prezime: "Jovan Ducic",
-                score: 5
-            }]
-        );
+        Users.find({highscore: {$gt: 0}}, "ime_prezime highscore").then(doc => res.status(200).json(doc));
     }
 });
 

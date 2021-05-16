@@ -39,16 +39,22 @@ btns.addEventListener('submit', e => {
     };
 });
 
-document.getElementById("solo-ready").addEventListener("click", () => {
-    document.getElementById("solo-msg").toggleAttribute("hidden");
+const start = first => {
+    console.log(!first)
+    if (first) {
+        document.getElementById("solo-msg").toggleAttribute("hidden")
+    } else {
+        document.getElementById("solo-fail").toggleAttribute("hidden")
+    }
+    // if (!first) {  }
     btns.toggleAttribute("hidden");
 
     socket.emit("izbor", -500);
-});
+}
 
 socket.on('log', message => console.log(message));
 
-socket.on('res', (recv_obj) => {
+socket.on('res', (recv_obj, time) => {
     progBar.classList.remove("progress");
     void progBar.offsetWidth;
     progBar.classList.add("progress");
@@ -56,8 +62,10 @@ socket.on('res', (recv_obj) => {
     replaceButtons(shuffle(recv_obj.answers));
 });
 
-socket.on('fail', () => {
-    
+socket.on('fail', score => {
+    btns.toggleAttribute("hidden");
+    document.getElementById("solo-score").innerText = `${score}`;
+    document.getElementById("solo-fail").toggleAttribute("hidden");
 });
 
 window.addEventListener('load', () => {
