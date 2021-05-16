@@ -36,7 +36,7 @@ const updateUi = (displayName, uid, photoURL) => {
 firebase.auth().onAuthStateChanged(user => {
     if (user) {
             const {displayName, uid, photoURL} = user;
-            fetch(`https://dev.backend.blitzmath.ml/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
+            fetch(`https://backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
             updateUi(displayName, uid, photoURL);
             document.getElementById("loading").toggleAttribute("hidden");
             document.querySelector("main").classList = "";
