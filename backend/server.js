@@ -144,7 +144,7 @@ const checkDB = (uid, email, displayName) => {
 }
 
 io.on("connection", socket => {
-    let ime, id;
+    let ime, id, finishTime;
     let score = -1, ans = -500;
     
 
@@ -154,26 +154,16 @@ io.on("connection", socket => {
         checkDB(uid, email, name);
         ime = name;
         id = uid;
+        finishTime = Date.now() + 10000;
     });
 
     socket.on('izbor', izbor => {
         console.log(`${ime} answered ${izbor}. Total: ${score} (correct: ${ans})`);
-        let timeout = null;
-        if (parseInt(izbor) === ans || ans === -500) {
+        if ((parseInt(izbor) === ans || ans === -500) && Date.now() <= finishTime) {
             // tacan odgovor
-            if (timeout) {
-                clearTimeout(timeout);
-            }
             score++;
-            time = 10000 * (0.95 ** score);
-            timeout = setTimeout(() => {
-                socket.emit("fail", score);
-                socket.disconnect();
-                Users.updateOne( { "uid": id, highscore: { $lt: score } }, { $set: { highscore: score } } )
-                .then(obj => {
-                    console.log(`User ${ime} failed with a score of ${score}!`);
-                });
-            }, time);
+            let time = 10000 * (0.95 ** score);
+            finishTime = Date.now() + time;
             q = genQuestion();
             ans = q.answers[0];            
             socket.emit("res", q, time);
