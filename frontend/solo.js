@@ -33,14 +33,14 @@ btns.addEventListener('submit', e => {
     socket.emit('izbor', e.submitter.textContent);
 });
 
-const start = first => {
+const start = (first) => {
     // console.log(!first)
     if (first) {
         document.getElementById("solo-msg").toggleAttribute("hidden")
     } else {
         document.getElementById("solo-fail").toggleAttribute("hidden")
         socket.connect();
-        socket.emit("conn", uid, displayName, email);
+        socket.emit("conn", localStorage.getItem(uid), localStorage.getItem(displayName), localStorage.getItem(email));
     }
     btns.toggleAttribute("hidden");
     socket.emit("izbor", -500);
@@ -69,6 +69,9 @@ window.addEventListener('load', () => {
         if (user) {
                 const {displayName, email, uid} = user;
                 if (email.indexOf('@teslabg.edu.rs') >= 0) {
+                    localStorage.setItem('uid', uid);
+                    localStorage.setItem('email', email);
+                    localStorage.setItem('email', email);
                     socket.connect();
                     socket.emit("conn", uid, displayName, email);
                 } else {
