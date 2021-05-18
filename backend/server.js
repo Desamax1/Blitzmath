@@ -169,6 +169,10 @@ io.on("connection", socket => {
             timeout = setTimeout(() => {
                 socket.emit("fail", score);
                 socket.disconnect();
+                Users.updateOne( { "uid": id, highscore: { $lt: score } }, { $set: { highscore: score } } )
+                .then(obj => {
+                    console.log(`User ${ime} failed with a score of ${score}!`);
+                });
             }, time);
             q = genQuestion();
             ans = q.answers[0];            
@@ -211,7 +215,7 @@ spdy.createServer({
     allowHTTP1: true,
     key: fs.readFileSync("keys/key.pem"),
     cert: fs.readFileSync("keys/cert.pem")
-}, app).listen(4433, err => {
+}, app).listen(8443, err => {
     if (err) {
         console.error(err);
     } else {
