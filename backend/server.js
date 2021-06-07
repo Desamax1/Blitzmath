@@ -110,8 +110,8 @@ const genQuestion = () => {
             }
         case "*":
         case "/":
-            br1 = random(1, 25);
-            br2 = random(1, 25);
+            br1 = random(1, 36);
+            br2 = random(1, 36);
             result = br1 * br2;
             if (op === "/") {
                 [result, br1] = [br1, result];
@@ -122,7 +122,7 @@ const genQuestion = () => {
                 answers: [result, result + genOffset(false), result + genOffset(false), result + genOffset(true)]
             }
         case "^":
-            br1 = random(2, 6);
+            br1 = random(2, 8);
             br2 = random(2, 4);
             result = br1 ** br2;
             izraz = `${br1}<sup>${br2}</sup>`;
@@ -163,6 +163,9 @@ io.on("connection", socket => {
             // tacan odgovor
             score++;
             let time = 10000 * (0.95 ** score);
+            if (time < 3500) {
+                time = 3500;
+            }
             finishTime = Date.now() + time;
             q = genQuestion();
             ans = q.answers[0];            
@@ -197,7 +200,7 @@ app.get("/leaderboard", (req, res) => {
             });
         });
     } else {
-        Users.find({highscore: {$gt: 0}}, "ime_prezime highscore").then(doc => res.status(200).json(doc));
+        Users.find({highscore: {$gt: 0}}, "ime_prezime highscore", {sort: { highscore: -1 }}).then(doc => res.status(200).json(doc));
     }
 });
 
