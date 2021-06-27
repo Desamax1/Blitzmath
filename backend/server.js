@@ -146,7 +146,6 @@ const checkDB = (uid, email, displayName) => {
 io.on("connection", socket => {
     let ime, id, finishTime;
     let score = -1, ans = -500;
-    
 
     socket.emit('log', `connected to the server with id ${socket.id}`);
     console.log(`session ${socket.id} started!`);
@@ -186,7 +185,7 @@ io.on("connection", socket => {
 });
 
 app.get("/loggedIn", (req, res) => {
-    Users.updateOne({uid: req.query.uid}, {lastLogin: Date.now()}).then(doc => console.log(`UID ${req.query.uid} logged in!`));
+    Users.updateOne({ uid: req.query.uid }, { lastLogin: Date.now() }).then(doc => console.log(`UID ${req.query.uid} logged in!`));
     res.status(200).json({
         message: "login recorded"
     });
@@ -200,7 +199,7 @@ app.get("/leaderboard", (req, res) => {
             });
         });
     } else {
-        Users.find({highscore: {$gt: 0}}, "ime_prezime highscore", {sort: { highscore: -1 }}).then(doc => res.status(200).json(doc));
+        Users.find({highscore: { $gt: 0 }}, "ime_prezime highscore", { sort: { highscore: -1 } }).then(doc => res.status(200).json(doc));
     }
 });
 
@@ -212,7 +211,7 @@ spdy.createServer({
     if (err) {
         console.error(err);
     } else {
-        console.log("REST API started")
+        console.log("REST API started");
     }
 });
 socketServer.listen(2053, () => console.log('Websocket started'));

@@ -15,7 +15,7 @@ firebase.analytics();
 document.getElementById("logout").addEventListener('click', () => {
     firebase.auth().signOut().then(() => {
         window.location.replace("/");
-    }).catch(e => console.error(e));
+    }).catch(console.error);
 });
 
 document.getElementById("solo-mod").addEventListener('click', () => {
@@ -29,7 +29,9 @@ document.getElementById("leaderboard").addEventListener('click', () => {
 const updateUi = (displayName, uid, photoURL) => {
     document.getElementById("slika").src = photoURL;
     document.getElementById("name").innerText = displayName;
-    fetch(`https://dev.backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => { document.getElementById("highscore").innerText = json.score }));
+    fetch(`https://dev.backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => {
+        document.getElementById("highscore").innerText = json.score;
+    }));
 }
 
 firebase.auth().onAuthStateChanged(user => {
@@ -42,4 +44,4 @@ firebase.auth().onAuthStateChanged(user => {
         } else {
             window.location.replace("/");
         }
-    }, e => console.error(e));
+    }, console.error);
