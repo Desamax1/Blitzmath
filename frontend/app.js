@@ -29,14 +29,13 @@ document.getElementById("leaderboard").addEventListener('click', () => {
 const updateUi = (displayName, uid, photoURL) => {
     document.getElementById("slika").src = photoURL;
     document.getElementById("name").innerText = displayName;
-    // document.getElementById("highscore").innerText = await axios.get(`https://backend.blitzmath.ml/leaderboard?uid=${uid}`);
-    fetch(`https://backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => { document.getElementById("highscore").innerText = json.score }));
+    fetch(`https://dev.backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => { document.getElementById("highscore").innerText = json.score }));
 }
 
 firebase.auth().onAuthStateChanged(user => {
     if (user) {
             const {displayName, uid, photoURL} = user;
-            fetch(`https://backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
+            fetch(`https://dev.backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
             updateUi(displayName, uid, photoURL);
             document.getElementById("loading").toggleAttribute("hidden");
             document.querySelector("main").classList = "";
