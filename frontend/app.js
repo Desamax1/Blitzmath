@@ -29,10 +29,10 @@ document.getElementById("leaderboard").addEventListener('click', () => {
 firebase.auth().onAuthStateChanged(user => {
     // if (user) {
     //     const {displayName, uid, photoURL} = user;
-    //     fetch(`https://dev.backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
+    //     fetch(`https://backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
         // document.getElementById("slika").src = photoURL;
         // document.getElementById("name").innerText = displayName;
-        // fetch(`https://dev.backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => {
+        // fetch(`https://backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => {
         //     document.getElementById("highscore").innerText = json.score;
         // }));
         // document.getElementById("loading").toggleAttribute("hidden");
@@ -53,10 +53,10 @@ firebase.auth().onAuthStateChanged(user => {
     if (user) {
         const { displayName, email, uid } = user;
         if (email.indexOf('@teslabg.edu.rs') > 0) {
-            fetch(`https://dev.backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
+            fetch(`https://backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
             document.getElementById("slika").src = photoURL;
             document.getElementById("name").innerText = displayName;
-            fetch(`https://dev.backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => {
+            fetch(`https://backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => {
                 document.getElementById("highscore").innerText = json.score;
             }));
             document.getElementById("loading").toggleAttribute("hidden");

@@ -1,5 +1,5 @@
 window.addEventListener('load', () => {
-    fetch("https://dev.backend.blitzmath.ml:8443/leaderboard").then(res => res.json().then(json => json.forEach(usr => {
+    fetch("https://backend.blitzmath.ml:8443/leaderboard").then(res => res.json().then(json => json.forEach(usr => {
         // console.log(usr);
         const element = document.createElement("tr");
         const data1 = document.createElement("td");
