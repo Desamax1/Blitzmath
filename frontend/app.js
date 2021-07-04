@@ -51,7 +51,7 @@ firebase.auth().onAuthStateChanged(user => {
     //     }).catch(console.error);
     // }
     if (user) {
-        const { displayName, email, uid } = user;
+        const { displayName, email, uid, photoURL } = user;
         if (email.indexOf('@teslabg.edu.rs') > 0) {
             fetch(`https://backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
             document.getElementById("slika").src = photoURL;
