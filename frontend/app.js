@@ -62,7 +62,6 @@ firebase.auth().onAuthStateChanged(user => {
             document.getElementById("loading").toggleAttribute("hidden");
             document.querySelector("main").classList = "";
         } else {
-            btns.toggleAttribute("hidden");
             let time = 5;
             document.getElementById("error").innerHTML = `Moraš koristiti školski mejl! Preusmeravanje za <span id="preostVreme"></span>s...`;
             firebase.auth().signOut().then(() => {
