@@ -63,7 +63,7 @@ firebase.auth().onAuthStateChanged(user => {
             document.querySelector("main").classList = "";
         } else {
             let time = 5;
-            document.getElementById("error").innerHTML = `Moraš koristiti školski mejl! Preusmeravanje za <span id="preostVreme"></span>s...`;
+            document.getElementById("error").innerHTML = 'Moraš koristiti školski mejl! Preusmeravanje za <span id="preostVreme"></span>s...';
             firebase.auth().signOut().then(() => {
                 setInterval(() => {
                     time -= 1;
