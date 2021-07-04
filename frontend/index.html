@@ -58,10 +58,14 @@
         const uiConfig = {
             signInSuccessUrl: 'app.html',
             signInOptions: [
-                firebase.auth.GoogleAuthProvider.PROVIDER_ID
+                {
+                    provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                    customParameters: {
+                        prompt: 'select_account'
+                    }
+                }
             ],
-            signInFlow: "popup",
-            prompt: "select_account"
+            signInFlow: "popup"
         };
         const ui = new firebaseui.auth.AuthUI(firebase.auth());
 

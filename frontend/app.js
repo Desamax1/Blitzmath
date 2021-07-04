@@ -26,22 +26,54 @@ document.getElementById("leaderboard").addEventListener('click', () => {
     window.location.replace("leaderboard.html");
 });
 
-const updateUi = (displayName, uid, photoURL) => {
-    document.getElementById("slika").src = photoURL;
-    document.getElementById("name").innerText = displayName;
-    fetch(`https://dev.backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => {
-        document.getElementById("highscore").innerText = json.score;
-    }));
-}
-
 firebase.auth().onAuthStateChanged(user => {
+    // if (user) {
+    //     const {displayName, uid, photoURL} = user;
+    //     fetch(`https://dev.backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
+        // document.getElementById("slika").src = photoURL;
+        // document.getElementById("name").innerText = displayName;
+        // fetch(`https://dev.backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => {
+        //     document.getElementById("highscore").innerText = json.score;
+        // }));
+        // document.getElementById("loading").toggleAttribute("hidden");
+        // document.querySelector("main").classList = "";
+    // } else {
+    //     let time = 5;
+    //     document.getElementById("error").innerHTML = `Moraš koristiti školski mejl! Preusmeravanje za <span id="preostVreme"></span>s...`;
+    //     firebase.auth().signOut().then(() => {
+    //         setInterval(() => {
+    //             time -= 1;
+    //             document.getElementById("preostVreme").innerText = `${time}`;
+    //         }, 1000);
+    //         setTimeout(() => {
+    //             window.location.replace("index.html");
+    //         }, 5000);
+    //     }).catch(console.error);
+    // }
     if (user) {
-            const {displayName, uid, photoURL} = user;
+        const { displayName, email, uid } = user;
+        if (email.indexOf('@teslabg.edu.rs') > 0) {
             fetch(`https://dev.backend.blitzmath.ml:8443/loggedIn?uid=${uid}`).then(res => res.json().then(json => console.log(json)));
-            updateUi(displayName, uid, photoURL);
+            document.getElementById("slika").src = photoURL;
+            document.getElementById("name").innerText = displayName;
+            fetch(`https://dev.backend.blitzmath.ml:8443/leaderboard?uid=${uid}`).then(res => res.json().then(json => {
+                document.getElementById("highscore").innerText = json.score;
+            }));
             document.getElementById("loading").toggleAttribute("hidden");
             document.querySelector("main").classList = "";
         } else {
-            window.location.replace("/");
+            btns.toggleAttribute("hidden");
+            let time = 5;
+            document.getElementById("error").innerHTML = `Moraš koristiti školski mejl! Preusmeravanje za <span id="preostVreme"></span>s...`;
+            firebase.auth().signOut().then(() => {
+                setInterval(() => {
+                    time -= 1;
+                    document.getElementById("preostVreme").innerText = `${time}`;
+                }, 1000);
+                setTimeout(() => {
+                    window.location.replace("index.html");
+                }, 5000);
+            }).catch(console.error);
         }
-    }, console.error);
+    }
+}, console.error);

@@ -1,4 +1,4 @@
-const fillTable = () => {
+window.addEventListener('load', () => {
     fetch("https://dev.backend.blitzmath.ml:8443/leaderboard").then(res => res.json().then(json => json.forEach(usr => {
         // console.log(usr);
         const element = document.createElement("tr");
@@ -10,6 +10,4 @@ const fillTable = () => {
         element.appendChild(data2);
         document.querySelector("tbody").appendChild(element);
     })));
-}
-
-window.addEventListener('load', fillTable);
+});

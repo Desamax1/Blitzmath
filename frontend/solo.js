@@ -65,28 +65,11 @@ socket.on('fail', score => {
 window.addEventListener('load', () => {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            const { displayName, email, uid } = user;
-            if (email.indexOf('@teslabg.edu.rs') > 0) {
-                localStorage.setItem('uid', uid);
-                localStorage.setItem('email', email);
-                localStorage.setItem('displayName', displayName);
-                socket.connect();
-                socket.emit("conn", uid, displayName, email);
-            } else {
-                localStorage.clear();
-                btns.toggleAttribute("hidden");
-                let time = 5;
-                document.getElementById("error").innerHTML = `Moraš koristiti školski mejl! Preusmeravanje za <span id="preostVreme"></span> sekund(i)...`;
-                firebase.auth().signOut().then(() => {
-                    setInterval(() => {
-                        time -= 1;
-                        document.getElementById("preostVreme").innerText = `${time}`;
-                    }, 1000);
-                    setTimeout(() => {
-                        window.location.replace("index.html");
-                    }, 5000);
-                }).catch(console.error);
-            }
+            const {uid, displayName, email} = user;
+            socket.connect();
+            socket.emit("conn", uid, displayName, email);
+        } else {
+            window.location.replace("app.html");
         }
     }, console.error);
 });
