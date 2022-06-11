@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="style.css" />
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -15,40 +18,33 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <script defer src="app.js"></script>
     
     <title>Blitzmath | Takmicenje u brzoj matematici</title>
 </head>
 <body>
-    <header class="title">
+    <div class="header">
         <h1>Blitzmath</h1>
-        <div class="titleCard"></div>
-    </header>
-    
-    <p id="loading">Ucitavanje...</p>
-    <main class="hidden">
-        <div id="card">
-            <img src="" alt="slika" height="96px" width="96px" id="slika">
-            <div>
-                <p id="name">Despot Maksimovic</p>
-                <p>Highscore: <span id="highscore">0</span></p>
-            </div>
-        </div>
-        <div>
-            <button id="solo-mod">solo mod</button>
-            <button id="takmicenje" disabled>takmicenje</button>
-            <button id="leaderboard">leaderboard</button>
-            <button id="logout">odjavi me</button>
-        </div>
-    </main>
-    
+        <div class="line"></div>
+        <h2>Takmičenje u brzoj matematici</h2>
+    </div>
+
+    <div id="g_id_onload"
+         data-client_id="191027295731-o3ro4f64qt7g70e9fk7mdpqh7fugs3oh.apps.googleusercontent.com"
+         data-login_uri="http://localhost:8443/user/login"
+         data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+      </div>
+
     <footer>
         <p>Blitzmath | Takmičenje u brzoj matematici</p>
-        <p>&copy; 2021 Despot Maksimović</p>
+        <p>&copy; 2021-2022 Despot Maksimović</p>
     </footer>
-
-    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/8.5.0/firebase-analytics.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js"></script>
 </body>
 </html>

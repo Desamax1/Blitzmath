@@ -7,44 +7,29 @@
 :root {
     font-size: calc(2vmin + 10px);
     font-family: 'Roboto Mono', monospace;
-    color: white;
     overflow: hidden;
+    --bg-color: #201E1F;
+    --primary: #DBCDC6;
     --animation-time: 10s;
+    color: var(--primary);
 }
 
 body {
-    background-color: #101420;
+    background-color: var(--bg-color);
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: space-around; */
+    justify-content: center;
     min-height: 100vh;
-    width: 100%;
-    overflow: hidden;
 }
 
-.title {
+/* HOMEPAGE */
+
+/* .title {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 5vh;
-    position: relative;
-}
-
-.titleCard {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #101420;
-    animation: start 1s forwards;
-}
-
-@keyframes start {
-    to {
-        transform: translateX(100%);
-    }
 }
 
 .title h1 {
@@ -56,14 +41,65 @@ body {
 
 .title h2 {
     font-size: 1rem;
+} */
+
+.header {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    top: 10vh;
 }
 
-.title hr {
-    width: 75vw;
-    color: white;
-    height: 0.1rem;
-    border: 0.1rem white solid;
+.header h1 {
+    text-transform: uppercase;
+    letter-spacing: 0.8rem;
 }
+
+.header h2 {
+    font-size: 1rem;
+}
+
+.line {
+    width: 75vw;
+    height: 3px;
+    background-color: var(--primary);
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    /* padding: 1rem; */
+    width: 100vw;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+@media screen and (min-width: 871px) {
+    footer {
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 870px) {
+    footer {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 330px) {
+    footer p {
+        font-size: 4vw;
+    }
+}
+
+/* HOMEPAGE END */
 
 button {
     font: inherit;
@@ -155,17 +191,6 @@ table td {
     border: white 0.115rem solid;
     padding: 0.2rem;
     border-radius: 0.5rem;
-}
-
-footer {
-    position: fixed;
-    bottom: 0;
-    padding: 1vw;
-    display: flex;
-    background-color: rgb(16, 18, 22);
-    width: 100vw;
-    justify-content: space-between;
-    font-size: 0.8rem;
 }
 
 /* NUMBER INPUT FIX */

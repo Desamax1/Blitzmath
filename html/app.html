@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Despot Maksimovic, despotmaksimovic@gmail.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
+    
+    <link type="text/css" rel="stylesheet" href="style.css" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
+    <title>Blitzmath | Takmicenje u brzoj matematici</title>
+</head>
+<body>
+    <div class="header">
+        <h1>Blitzmath</h1>
+    </div>
+    
+    <main>
+        <div id="card">
+            <img src="/img/user" alt="profile-image" height="96px" width="96px">
+            <div>
+                <p id="name"></p>
+                <p>Highscore: <span id="highscore"></span></p>
+            </div>
+        </div>
+        <div>
+            <button id="solo-mod" onclick='window.location.replace("solo.html")'>solo mod</button>
+            <button id="takmicenje" disabled>takmicenje</button>
+            <button id="leaderboard" onclick='window.location.replace("leaderboard.html")'>leaderboard</button>
+            <button id="logout" onclick='window.location.replace("/user/logout")'>odjavi me</button>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Blitzmath | Takmičenje u brzoj matematici</p>
+        <p>&copy; 2021-2022 Despot Maksimović</p>
+    </footer>
+
+    <script>
+        async function fillInData() {
+            const raw = await fetch("/user/data");
+            const data = await raw.json();
+            document.getElementById("name").innerText = data.ime + " " + data.prezime;
+            document.getElementById("highscore").innerText = data.highscore;
+        }
+        fillInData();
+    </script>
+</body>
+</html>
