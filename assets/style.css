@@ -63,6 +63,10 @@ footer {
     font-size: 0.8rem;
 }
 
+footer a {
+    color: var(--primary);
+}
+
 @media screen and (min-width: 871px) {
     footer {
         padding: 10px;

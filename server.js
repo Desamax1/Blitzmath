@@ -5,15 +5,15 @@ const path = require("path");
 const sharp = require("sharp");
 const formidable = require("formidable");
 const axios = require("axios");
+
 const fs = require("fs");
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-const db = require("better-sqlite3")("blitzmath.db", {
-    fileMustExist: true
-});
+const db = require("better-sqlite3")("blitzmath.db");
 
 const cors = require("cors");
 const app = express();
@@ -227,7 +227,7 @@ app.get("/dash", (req, res) => {
         res.redirect("/");
     }
 });
-app.get("/img/user", (req, res) => {
+app.get("/user/img", (req, res) => {
     if (req.cookies.uid) {
         res.sendFile(path.join(__dirname, "img", `${req.cookies.uid}`));
     } else {
@@ -256,4 +256,17 @@ app.get("/", (req, res) => {
     }
 });
 
-httpServer.listen(8443, () => console.log(`Listening on http://localhost:8443`));
+httpServer.listen(8443, () => {
+    console.log(`Listening on http://localhost:8443`);
+    db.prepare(`CREATE TABLE IF NOT EXISTS "users" (
+        "id"	INTEGER,
+        "googleId"	TEXT NOT NULL UNIQUE,
+        "createdAt"	INTEGER,
+        "lastLogin"	INTEGER,
+        "ime"	TEXT,
+        "prezime"	TEXT,
+        "highscore"	INTEGER DEFAULT 0,
+        "showLB"	INTEGER DEFAULT 1,
+        PRIMARY KEY("id" AUTOINCREMENT)
+    );`).run();
+});
