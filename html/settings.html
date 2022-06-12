@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Despot Maksimovic, despotmaksimovic@gmail.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
+    
+    <link type="text/css" rel="stylesheet" href="style.css" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
+    <title>Blitzmath | Takmicenje u brzoj matematici</title>
+</head>
+<body>
+    <div class="header">
+        <h1>Blitzmath</h1>
+    </div>
+    
+    <div class="settings">
+        <div class="scroll">
+            <section id="lbsetting">
+                <p>Prikazi moje ime na leaderboard-u</p>
+                <input type="checkbox" id="lbsettingbox">
+            </section>
+            <section id="avatar">
+                <div class="multirow">
+                    <p>Promena avatara</p>
+                    <p class="subtext">Podrzani tipovi: jpeg, png, gif, webp <br/> Preporucena velicina: 96x96 </p>
+                </div>
+                <input type="file" id="avatar-box" accept=".jpg, .jpeg, .png, .gif, .webp">
+            </section>
+        </div>
+        <button id="save-button" onclick="saveAndExit()">sacuvaj i vrati se</button>
+    </div>
+    
+    <footer>
+        <p>Blitzmath | Takmičenje u brzoj matematici</p>
+        <p>&copy; 2021-2022 Despot Maksimović</p>
+    </footer>
+
+    <script>
+        window.onload = async function() {
+            const raw = await fetch("/user/settings");
+            var data = await raw.json();
+            document.getElementById("lbsettingbox").checked = data.showLB;
+        }
+
+        async function saveAndExit() {
+            const new_data = new FormData();
+            new_data.append("avatar", document.getElementById("avatar-box").files[0]);
+            new_data.append("showLB", document.getElementById("lbsettingbox").checked);
+
+            await fetch("/user/settings", {
+                method: "POST",
+                body: new_data
+            });
+
+            window.location.replace("/dash");
+        }
+    </script>
+</body>
+</html>

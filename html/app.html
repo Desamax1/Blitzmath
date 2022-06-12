@@ -25,21 +25,22 @@
         <h1>Blitzmath</h1>
     </div>
     
-    <main>
+    <div class="dash">
         <div id="card">
             <img src="/img/user" alt="profile-image" height="96px" width="96px">
-            <div>
+            <div class="nameholder">
                 <p id="name"></p>
                 <p>Highscore: <span id="highscore"></span></p>
             </div>
         </div>
         <div>
-            <button id="solo-mod" onclick='window.location.replace("solo.html")'>solo mod</button>
+            <button id="solo-mod" onclick='window.location.replace("/solo");'>solo mod</button>
             <button id="takmicenje" disabled>takmicenje</button>
-            <button id="leaderboard" onclick='window.location.replace("leaderboard.html")'>leaderboard</button>
-            <button id="logout" onclick='window.location.replace("/user/logout")'>odjavi me</button>
+            <button id="leaderboard" onclick='window.location.replace("/leaderboard");'>leaderboard</button>
+            <button id="settings" onclick="window.location.replace('/settings');">podesavanja</button>
+            <button id="logout" onclick='window.location.replace("/user/logout");'>odjavi me</button>
         </div>
-    </main>
+    </div>
     
     <footer>
         <p>Blitzmath | Takmičenje u brzoj matematici</p>
@@ -53,7 +54,7 @@
             document.getElementById("name").innerText = data.ime + " " + data.prezime;
             document.getElementById("highscore").innerText = data.highscore;
         }
-        fillInData();
+        window.onload = fillInData;
     </script>
 </body>
 </html>

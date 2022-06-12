@@ -2,7 +2,8 @@ require("dotenv").config();
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const path = require("path");
-
+const sharp = require("sharp");
+const formidable = require("formidable");
 const axios = require("axios");
 const fs = require("fs");
 const express = require("express");
@@ -23,7 +24,7 @@ app.use(cookieParser());
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-    serveClient: false,
+    serveClient: true,
     cors: {
         origin: ["https://blitzmath.ml", "http://localhost:5500"],
         methods: ["GET"]
@@ -140,23 +141,28 @@ app.post("/user/login", async (req, res) => {
             audience: process.env.GOOGLE_CLIENT_ID
         });
         const payload = ticket.getPayload();
-        // const userid = payload['sub'];
-        // console.log(payload);
         
         if (!db.prepare(`SELECT id FROM users WHERE googleId='${payload.sub}'`).get()) {
             db.prepare(`INSERT INTO users (googleId, createdAt, lastLogin, ime, prezime) VALUES ('${payload.sub}', ${Date.now()}, ${Date.now()}, '${payload.given_name}', '${payload.family_name}')`).run();
+            const response = await axios.get(payload.picture,  { responseType: 'arraybuffer' });
+            await sharp(Buffer.from(response.data, "utf-8")).resize({
+                width: 96,
+                height: 96,
+                fit: 'cover'
+            }).webp({
+                quality: 75,
+                smartSubsample: true
+            }).toFile(path.join(__dirname, "img", `${payload.sub}`));
         } else {
             db.prepare(`UPDATE users SET lastLogin=${Date.now()} WHERE googleId='${payload.sub}'`).run();
         }
 
-        const response = await axios.get(payload.picture,  { responseType: 'arraybuffer' });
-        fs.writeFile(path.join(__dirname, "img", `${payload.sub}.png`), Buffer.from(response.data, "utf-8"), () => {});
 
         res.cookie("uid", payload.sub, {
             maxAge: 1000*3600*24*365,
             httpOnly: true
         })
-        res.redirect("/");
+        res.redirect("/dash");
     } catch (e) {
         res.sendStatus(500);
         console.error(e);
@@ -167,19 +173,54 @@ app.get("/user/logout", (req, res) => {
     res.redirect("/");
 });
 
-app.get("/leaderboard", (req, res) => {
-    if (req.query.uid) {
-        Users.findOne({uid: req.query.uid}).then(doc => {
-            res.status(200).json({
-                score: doc.highscore
-            });
-        });
+app.get("/settings", (req, res) => {
+    res.sendFile(path.join(__dirname, "html", "settings.html"));
+});
+app.get("/user/settings", (req, res) => {
+    if (req.cookies.uid) {
+        const settings = db.prepare(`SELECT showLB FROM users WHERE googleId='${req.cookies.uid}'`).get();
+        res.json(settings);
     } else {
-        Users.find({highscore: { $gt: 0 }}, "ime_prezime highscore", { sort: { highscore: -1 } }).then(doc => res.status(200).json(doc));
+        res.sendStatus(401);
     }
 });
+app.post("/user/settings", (req, res) => {
+    if (req.cookies.uid === undefined) {
+        res.sendStatus(401);
+    }
+    const form = formidable({
+        maxFileSize: 10 * 1024 * 1024
+    });
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(500);
+        }
+        db.prepare(`UPDATE users SET showLB=${fields.showLB} WHERE googleId='${req.cookies.uid}'`).run();
+        if (files.avatar && (files.avatar.mimetype === "image/png" || files.avatar.mimetype === "image/jpg" || files.avatar.mimetype === "image/jpeg" || files.avatar.mimetype === "image/webp" || files.avatar.mimetype === "image/gif")) {
+            // compess and save
+            await sharp(files.avatar.filepath).resize({
+                width: 96,
+                height: 96,
+                fit: 'cover'
+            }).webp({
+                quality: 75,
+                smartSubsample: true
+            }).toFile(path.join(__dirname, "img", `${req.cookies.uid}`));
+        }
+        res.sendStatus(200);
+    });
+});
 
-app.get("/app", (req, res) => {
+app.get("/leaderboard", (req, res) => {
+    res.sendFile(path.join(__dirname, "html", "leaderboard.html"));
+});
+app.get("/stats", (req, res) => {
+    const scores = db.prepare(`SELECT ime, prezime, highscore, id FROM users WHERE highscore > 0 AND users.showLB = 1 ORDER BY highscore DESC`).all();
+    res.json(scores);
+});
+
+app.get("/dash", (req, res) => {
     if (req.cookies.uid) {
         res.sendFile(path.join(__dirname, "html", "app.html"));
     } else {
@@ -188,7 +229,7 @@ app.get("/app", (req, res) => {
 });
 app.get("/img/user", (req, res) => {
     if (req.cookies.uid) {
-        res.sendFile(path.join(__dirname, "img", `${req.cookies.uid}.png`));
+        res.sendFile(path.join(__dirname, "img", `${req.cookies.uid}`));
     } else {
         res.sendStatus(401);
     }
@@ -209,9 +250,10 @@ app.get("/site.webmanifest", (req, res) => res.sendFile(path.join(__dirname, "as
 app.get("/style.css", (req, res) => res.sendFile(path.join(__dirname, "assets", "style.css")));
 app.get("/", (req, res) => {
     if (req.cookies.uid) {
-        res.redirect("/app");
+        res.redirect("/dash");
+    } else {
+        res.sendFile(path.join(__dirname, "html", "index.html"))
     }
-    res.sendFile(path.join(__dirname, "html", "index.html"))
 });
 
 httpServer.listen(8443, () => console.log(`Listening on http://localhost:8443`));

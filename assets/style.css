@@ -21,27 +21,10 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    counter-reset: rednibr;
 }
 
 /* HOMEPAGE */
-
-/* .title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 5vh;
-}
-
-.title h1 {
-    font-size: 1.5rem;
-    margin-left: 1.4rem;
-    letter-spacing: 1.4rem;
-    text-transform: uppercase;
-}
-
-.title h2 {
-    font-size: 1rem;
-} */
 
 .header {
     width: 100vw;
@@ -72,7 +55,6 @@ body {
 footer {
     position: fixed;
     bottom: 0;
-    /* padding: 1rem; */
     width: 100vw;
     display: flex;
     flex-wrap: wrap;
@@ -100,11 +82,173 @@ footer {
 }
 
 /* HOMEPAGE END */
+/* DASH */
 
+.dash {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.dash div {
+    width: 100%;
+}
+
+#card {
+    display: flex;
+    border: 2px white solid;
+    padding: 0.3rem;
+    margin-bottom: 10px;
+}
+
+#card, #card img {
+    border-radius: 0.3rem;
+}
+
+.nameholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#settings {
+    margin-top: 5vh;
+}
+
+/* DASH END */
+/* LEADERBOARD */
+
+.leaderboard {
+    width: 90vw;
+    height: 60vh;
+    margin-top: 10vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.leaderboard .row {
+    width: 100%;
+    display: flex;
+}
+
+.leaderboard .row:not(:last-child) {
+    border-bottom: 1px solid var(--primary);
+}
+
+.leaderboard .row .name {
+    width: 100%;
+    text-align: center;
+}
+
+.leaderboard .row .score {
+    text-align: right;
+    border-left: 1px solid var(--primary);
+    padding-left: 2px;
+}
+
+@media screen and (max-width: 425px) {
+    .leaderboard .row {
+        font-size: 0.75rem;
+    }
+}
+
+.leaderboard .row::before {
+    counter-increment: rednibr;
+    content: counters(rednibr, '.', decimal-leading-zero);
+    border-right: 1px solid var(--primary);
+    padding-right: 2px;
+}
+
+/* LEADERBOARD END */
+/* SETTINGS */
+
+.settings {
+    position: relative;
+    overflow: hidden;
+    width: 80vw;
+    height: 60vh;
+    border-radius: 1rem;
+    border: 3px solid var(--primary);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.settings .scroll {
+    overflow-y: scroll;
+}
+
+.settings section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 30px;
+}
+
+@media screen and (max-width: 400px) {
+    .settings {
+        width: 90vw;
+    }
+    .settings section {
+        padding: 5px 10px;
+    }
+    #avatar .multirow .subtext {
+        font-size: 0.7rem !important;
+    }
+}
+
+.settings section:not(:last-child) {
+    border-bottom: 2px solid var(--primary);
+}
+
+#lbsetting input[type="checkbox"] {
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+#avatar .multirow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#avatar .multirow .subtext {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+#avatar-box {
+    cursor: pointer;
+}
+
+.settings #save-button {
+    position: absolute;
+    bottom: 0;
+}
+
+/* Hide scrollbar */
+.scroll::-webkit-scrollbar {
+    display: none;
+}
+.scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* SETTINGS END */
 button {
     font: inherit;
     width: 100%;
     padding: 5px;
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: default;
 }
 
 #question {
@@ -115,42 +259,8 @@ button {
     margin-top: 5%;
 }
 
-#firebase-auth {
-    margin: auto;
-}
-
-#card {
-    display: flex;
-    border: 0.115rem white solid;
-    padding: 0.3rem;
-    width: clamp(260px, 50vw, 100vw);
-}
-
-#card, #card img {
-    border-radius: 0.3rem;
-}
-
-#card div {
-    margin-left: 0.3rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-}
-
-main {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    height: 80vh;
-    width: clamp(260px, 50vw, 100vw);
-}
-
 .hidden {
     display: none;
-}
-
-#logout {
-    margin-top: 5vh;
 }
 
 .progress {
@@ -162,29 +272,18 @@ main {
 @keyframes progBar {
     from {
         width: 100%;
-        background-color: #2773a0;
+        background-color: #2774a0;
     }
     20% {
-        background-color: #2773a0;
+        background-color: #2774a0;
     }
     30% {
-        background-color: rgb(218, 185, 40);
+        background-color: #dbba29;
     }
     to {
         width: 0%;
-        background-color: rgb(187, 11, 11);
+        background-color: #bc0b0b;
     }
-}
-
-table {
-    border: 0.12rem solid white;
-    border-collapse: collapse;
-    caption-side: bottom;
-}
-
-table td {
-    border: 2px white solid;
-    padding: 0.2rem;
 }
 
 .solo {
