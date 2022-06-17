@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(shrink());
 app.use((req, res, next) => {
-    const clear = ["/", "/style.css", "/site.webmanifest", "/safari-pinned-tab.svg", "/favicon-32x32.png", "/favicon-16x16.png", "/apple-touch-icon.png", "/user/login", "/tos", "/pp", "/robots.txt"];
+    const clear = ["/", "/style.css", "/site.webmanifest", "/safari-pinned-tab.svg", "/favicon-32x32.png", "/favicon-16x16.png", "/apple-touch-icon.png", "/user/login", "/tos", "/pp", "/robots.txt", "/mstile-150x150.png"];
     if (!clear.includes(req.url) && !req.cookies.uid) {
         res.status(401).redirect("/");
     } else {
@@ -200,7 +200,8 @@ app.post("/user/login", async (req, res) => {
             maxAge: 1000*3600*24*365,
             httpOnly: true,
             sameSite: "strict",
-        })
+            secure: true,
+        });
         res.redirect("/dash");
     } catch (e) {
         res.sendStatus(500);
@@ -276,7 +277,8 @@ app.get("/favicon-16x16.png", (req, res) => res.sendFile(path.join(__dirname, "a
 app.get("/favicon-32x32.png", (req, res) => res.sendFile(path.join(__dirname, "assets", "favicon-32x32.png")));
 app.get("/safari-pinned-tab.svg", (req, res) => res.sendFile(path.join(__dirname, "assets", "safari-pinned-tab.svg")));
 app.get("/site.webmanifest", (req, res) => res.sendFile(path.join(__dirname, "assets", "site.webmanifest")));
-app.get("/style.css", (req, res) => res.sendFile(path.join(__dirname, "assets", "style.css")));
+app.get("/mstile-150x150.png", (req, res) => res.sendFile(path.join(__dirname, "assets", "mstile-150x150.png")));
+app.get("/style.css", (req, res) => res.sendFile(path.join(__dirname, "assets", "style.min.css")));
 app.get("/", (req, res) => {
     if (req.cookies.uid) {
         res.redirect("/dash");
@@ -286,7 +288,7 @@ app.get("/", (req, res) => {
 });
 
 httpServer.listen(443, () => {
-    console.log(`Listening on http://localhost:443`);
+    console.log(`Listening on https://localhost/`);
     db.prepare(`CREATE TABLE IF NOT EXISTS"users" (
         "id"	INTEGER,
         "googleId"	TEXT UNIQUE,
