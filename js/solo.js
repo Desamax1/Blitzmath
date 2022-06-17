@@ -1,11 +1,11 @@
-const socket = io('https://dev.backend.blitzmath.ml:2053', {
+const socket = io("wss:///", {
     autoConnect: false
 });
 
-const btns = document.getElementById('buttons-wrapper');
+const btns = document.getElementById("buttons-wrapper");
 const progBar = document.getElementById("progbar");
 
-const shuffle = array => {
+function shuffle(array) {
     let currentIndex = array.length, temporaryValue, randomIndex;
     while (0 !== currentIndex) {
         randomIndex = Math.floor(Math.random() * currentIndex);
@@ -17,59 +17,56 @@ const shuffle = array => {
     return array;
 }
 
-const replaceButtons = answers => {
+function replaceButtons(answers) {
     document.getElementById("btn-1").innerHTML = answers[0];
     document.getElementById("btn-2").innerHTML = answers[1];
     document.getElementById("btn-3").innerHTML = answers[2];
     document.getElementById("btn-4").innerHTML = answers[3];
 }
 
-btns.addEventListener('submit', e => {
+btns.addEventListener("submit", e => {
     e.preventDefault();
-    socket.emit('izbor', e.submitter.textContent);
+    socket.emit("izbor", e.submitter.textContent);
 });
 
-const start = (first) => {
+function start(first) {
     if (first) {
-        document.getElementById("solo-msg").toggleAttribute("hidden")
-    } else {
-        document.getElementById("solo-fail").toggleAttribute("hidden")
+        document.getElementById("solo-msg").toggleAttribute("hidden");
         socket.connect();
-        socket.emit("conn",
-            localStorage.getItem("uid"),
-            localStorage.getItem("displayName"),
-            localStorage.getItem("email")
-        );
+    } else {
+        document.getElementById("solo-fail").toggleAttribute("hidden");
+        socket.connect();
     }
     btns.toggleAttribute("hidden");
-    socket.emit("izbor", -500);
+    socket.emit("getQ");
 }
 
-socket.on('log', message => console.log(message));
+socket.on("log", console.log);
 
-socket.on('res', (recv_obj, time) => {
+socket.on("questions", (q, time) => {
     progBar.classList.remove("progress");
     void progBar.offsetWidth;
     progBar.classList.add("progress");
     document.querySelector("body").style.setProperty("--animation-time", time + "ms");
-    document.getElementById('question').innerHTML = recv_obj.prompt;
-    replaceButtons(shuffle(recv_obj.answers));
+    document.getElementById('question').innerHTML = q.prompt;
+    replaceButtons(shuffle(q.answers));
+    console.log(q, time);
 });
 
-socket.on('fail', score => {
-    btns.toggleAttribute("hidden");
-    document.getElementById("solo-score").innerText = `${score}`;
-    document.getElementById("solo-fail").toggleAttribute("hidden");
-});
-
-window.addEventListener('load', () => {
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            const {uid, displayName, email} = user;
-            socket.connect();
-            socket.emit("conn", uid, displayName, email);
+socket.on("res", (correct, score, time) => {
+    console.log(correct)
+    if (!correct) {
+        btns.toggleAttribute("hidden");
+        if (time) {
+            // pogresio je
+            document.getElementById("reason").innerText = "Ostao si bez vremena!";
         } else {
-            window.location.replace("app.html");
+            // ostao je bez vremena
+            document.getElementById("reason").innerText = "Pogresno si odgovorio na to pitanje!";
         }
-    }, console.error);
+        document.getElementById("solo-score").innerText = `${score}`;
+        document.getElementById("solo-fail").toggleAttribute("hidden");
+    } else {
+        socket.emit("getQ");
+    }
 });

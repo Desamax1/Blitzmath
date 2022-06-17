@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="author" content="Despot Maksimovic, despotmaksimovic@gmail.com" />
+    <meta name="description" content="Blitzmath je matematičko takmičenje napravljeno sa ciljem da pomogne ljudima da na zanimljiv način poboljšaju svoje matematičke sposobnosti." />
+
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet" />
+
     <link type="text/css" rel="stylesheet" href="style.css" />
+
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -14,72 +18,51 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <script type="text/javascript" src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
-    <script defer type="text/javascript" src="solo.js"></script>
+    
+    <script type="text/javascript" src="/socket.io/socket.io.min.js"></script>
+    <script defer type="text/javascript" src="/solo.js"></script>
 
     <title>Blitzmath | Takmicenje u brzoj matematici</title>
 </head>
 <body>
-    <header class="title">
+    <div class="header">
         <h1>Blitzmath</h1>
-        <div class="titleCard"></div>
-    </header>
+    </div>
 
-    <main>
-        <div class="solo" id="solo-msg">
-            <h2>Solo mod</h2>
-            <p>U solo modu takmicenja potrebno je da odgovaras tacno na pitanja dokle god je to moguce!</p>
-            <br>
-            <p>Nakon svake runde imaces po 5% manje vremena. Nakon sto izgubis videces broj poena koji si osvojio i svoj highscore, a imaces i opciju da pokusas ponovo ako nisi zadovoljan svojim rezultatom.</p>
-            <br>
-            <button onclick="start(true)">spreman sam</button>
-            <button onclick="window.location.replace('app.html')">vrati se nazad</button>
-        </div>
+    <div class="solo" id="solo-msg">
+        <h2>Solo mod</h2>
+        <p>U solo modu takmicenja potrebno je da odgovaras tacno na pitanja dokle god je to moguce!</p>
+        <br>
+        <p>Nakon svake runde imaces po 5% manje vremena. Nakon sto izgubis videces broj poena koji si osvojio i svoj highscore, a imaces i opciju da pokusas ponovo ako nisi zadovoljan svojim rezultatom.</p>
+        <br>
+        <button onclick="start(true)">spreman sam</button>
+        <button onclick="window.location.replace('/dash')">vrati se nazad</button>
+    </div>
 
-        <div class="solo" id="solo-fail" hidden>
-            <h2>Pogresan odgovor!</h2>
-            <p>Pogresno si odgovorio na to pitanje ili si ostao bez vremena! Tvoj score bio je <span id="solo-score"></span>.</p>
-            <button onclick="start(false)">igraj ponovo</button>
-            <button onclick="window.location.replace('app.html')">vrati se nazad</button>
-        </div>
+    <div class="solo" id="solo-fail" hidden>
+        <h2>Pogresan odgovor!</h2>
+        <p> <span id="reason"></span><br>Tvoj score bio je <span id="solo-score"></span>.</p>
+        <button onclick="start(false)">igraj ponovo</button>
+        <button onclick="window.location.replace('/dash')">vrati se nazad</button>
+    </div>
 
-        <form id="buttons-wrapper" hidden>
-            <p id="question"></p>
+    <form class="solo" id="buttons-wrapper" hidden>
+        <p id="question"></p>
 
-            <button type="submit" id="btn-1"></button>
-            <button type="submit" id="btn-2"></button>
-            <button type="submit" id="btn-3"></button>
-            <button type="submit" id="btn-4"></button>
+        <button type="submit" id="btn-1"></button>
+        <button type="submit" id="btn-2"></button>
+        <button type="submit" id="btn-3"></button>
+        <button type="submit" id="btn-4"></button>
 
-            <div class="progress" id="progbar"></div>
+        <div class="progress" id="progbar"></div>
 
-            <p id="time"></p>
-            <p id="message"></p>
-        </form>
-    </main>
+        <p id="time"></p>
+        <p id="message"></p>
+    </form>
 
     <footer>
         <p>Blitzmath | Takmičenje u brzoj matematici</p>
-        <p>&copy; 2021 Despot Maksimović</p>
+        <p>&copy; 2021-2022 <a href="mailto:despotmaksimovic@gmail.com">Despot Maksimović</a></p>
     </footer>
-
-    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/8.5.0/firebase-analytics.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js"></script>
-    <script type="text/javascript">
-        var firebaseConfig = {
-          apiKey: "AIzaSyAi305auov5H3siXdByjx-fBKbom9X9EqM",
-          authDomain: "blitzmath-3ee6b.firebaseapp.com",
-          databaseURL: "https://blitzmath-3ee6b-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "blitzmath-3ee6b",
-          storageBucket: "blitzmath-3ee6b.appspot.com",
-          messagingSenderId: "762275634313",
-          appId: "1:762275634313:web:12e5fd745f38f5b808ba58",
-          measurementId: "G-Q5JPQ5KHWE"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-    </script>
 </body>
 </html>
